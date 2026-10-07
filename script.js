@@ -8,23 +8,31 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 // ========================================
 // GET HTML ELEMENTS
 // ========================================
 
-const loginForm = document.getElementById("loginForm");
+const loginForm =
+    document.getElementById("loginForm");
 
-const userIdInput = document.getElementById("userId");
-const passwordInput = document.getElementById("password");
+const userIdInput =
+    document.getElementById("userId");
+
+const passwordInput =
+    document.getElementById("password");
 
 const togglePassword =
     document.getElementById("togglePassword");
+
+const loginButton =
+    document.getElementById("loginButton");
 
 const message =
     document.getElementById("message");
@@ -43,125 +51,223 @@ const displayRole =
 // SHOW / HIDE PASSWORD
 // ========================================
 
-togglePassword.addEventListener("click", function () {
+togglePassword.addEventListener(
+    "click",
+    function (event) {
 
-    if (passwordInput.type === "password") {
+        event.preventDefault();
 
-        passwordInput.type = "text";
-        togglePassword.textContent = "Hide";
+        if (passwordInput.type === "password") {
 
-    } else {
+            passwordInput.type = "text";
 
-        passwordInput.type = "password";
-        togglePassword.textContent = "Show";
+            togglePassword.textContent = "Hide";
+
+        } else {
+
+            passwordInput.type = "password";
+
+            togglePassword.textContent = "Show";
+        }
 
     }
-
-});
+);
 
 
 // ========================================
 // LOGIN
 // ========================================
 
-loginForm.addEventListener("submit", async function (event) {
+loginForm.addEventListener(
+    "submit",
+    async function (event) {
 
-    event.preventDefault();
-
-    const userId = userIdInput.value.trim();
-    const password = passwordInput.value;
-
-    message.textContent = "";
-    userInfo.classList.add("hidden");
+        event.preventDefault();
 
 
-    // Check that fields are not empty
+        // Get input values
 
-    if (!userId || !password) {
+        const userId =
+            userIdInput.value.trim();
+
+        const password =
+            passwordInput.value;
+
+
+        // Clear previous messages
+
+        message.textContent = "";
+
+        message.className = "message";
+
+        userInfo.classList.add("hidden");
+
+
+        // ========================================
+        // EMPTY INPUT
+        // ========================================
+
+        if (!userId || !password) {
+
+            message.textContent =
+                "Please enter your User ID and Password.";
+
+            message.className =
+                "message warning";
+
+            return;
+        }
+
+
+        // ========================================
+        // LOADING
+        // ========================================
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "Checking...";
+
+
+        // ========================================
+        // QUERY USERS TABLE
+        // ========================================
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("users")
+            .select(
+                "user_id, full_name, password, role, status"
+            )
+            .eq("user_id", userId)
+            .maybeSingle();
+
+
+        // ========================================
+        // DATABASE ERROR
+        // ========================================
+
+        if (error) {
+
+            console.error(
+                "Supabase error:",
+                error
+            );
+
+            message.textContent =
+                "Unable to connect to the database.";
+
+            message.className =
+                "message error";
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+        }
+
+
+        // ========================================
+        // USER NOT FOUND
+        // ========================================
+
+        if (!data) {
+
+            message.textContent =
+                "Incorrect User ID or Password.";
+
+            message.className =
+                "message error";
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+        }
+
+
+        // ========================================
+        // PASSWORD CHECK
+        // ========================================
+
+        if (data.password !== password) {
+
+            message.textContent =
+                "Incorrect User ID or Password.";
+
+            message.className =
+                "message error";
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+        }
+
+
+        // ========================================
+        // ACCOUNT STATUS
+        // ========================================
+
+        if (data.status !== "Active") {
+
+            message.textContent =
+                "This account is inactive.";
+
+            message.className =
+                "message error";
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login";
+
+            return;
+        }
+
+
+        // ========================================
+        // SUCCESS
+        // ========================================
 
         message.textContent =
-            "Please enter your User ID and Password.";
+            "Login successful!";
 
-        return;
+        message.className =
+            "message success";
+
+
+        displayName.textContent =
+            data.full_name;
+
+        displayRole.textContent =
+            data.role;
+
+        userInfo.classList.remove("hidden");
+
+
+        console.log(
+            "Logged in user:",
+            data
+        );
+
+
+        // ========================================
+        // RESET BUTTON
+        // ========================================
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+            "Login";
+
     }
-
-
-    // ========================================
-    // QUERY SUPABASE
-    // ========================================
-
-    const { data, error } = await supabaseClient
-        .from("users")
-        .select("user_id, full_name, password, role, status")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-
-    // ========================================
-    // DATABASE ERROR
-    // ========================================
-
-    if (error) {
-
-        console.error("Supabase error:", error);
-
-        message.textContent =
-            "Unable to connect to the database.";
-
-        return;
-    }
-
-
-    // ========================================
-    // USER NOT FOUND
-    // ========================================
-
-    if (!data) {
-
-        message.textContent =
-            "Invalid User ID or Password.";
-
-        return;
-    }
-
-
-    // ========================================
-    // CHECK PASSWORD
-    // ========================================
-
-    if (data.password !== password) {
-
-        message.textContent =
-            "Invalid User ID or Password.";
-
-        return;
-    }
-
-
-    // ========================================
-    // CHECK ACCOUNT STATUS
-    // ========================================
-
-    if (data.status !== "Active") {
-
-        message.textContent =
-            "This account is inactive.";
-
-        return;
-    }
-
-
-    // ========================================
-    // LOGIN SUCCESSFUL
-    // ========================================
-
-    displayName.textContent = data.full_name;
-    displayRole.textContent = data.role;
-
-    userInfo.classList.remove("hidden");
-
-    message.textContent = "Login successful.";
-
-    console.log("Logged in user:", data);
-
-});
+);
