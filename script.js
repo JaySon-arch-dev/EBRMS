@@ -1,8 +1,7 @@
 // ========================================
 // SUPABASE CONNECTION
 // ========================================
-
-const SUPABASE_URL =
+console.log("EBRMS script.js is running");
 const SUPABASE_URL =
     "https://lrlzlzfulcajbuqeufym.supabase.co";
 
@@ -14,7 +13,6 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_KEY
     );
-
 // ========================================
 // GET HTML ELEMENTS
 // ========================================
