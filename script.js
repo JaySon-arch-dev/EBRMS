@@ -3,6 +3,7 @@
 // ========================================
 
 const SUPABASE_URL =
+const SUPABASE_URL =
     "https://lrlzlzfulcajbuqeufym.supabase.co";
 
 const SUPABASE_KEY =
@@ -13,7 +14,6 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_KEY
     );
-
 
 // ========================================
 // GET HTML ELEMENTS
