@@ -1,17 +1,6 @@
-console.log("EBRMS script.js is running");
+console.log("1. script.js loaded");
 
-const SUPABASE_URL =
-    "https://lrlzlzfulcajbuqeufym.supabase.co";
+console.log("2. Supabase object:");
+console.log(window.supabase);
 
-const SUPABASE_KEY =
-    "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
-
-console.log("Supabase library:", window.supabase);
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-console.log("Supabase client created successfully");
+alert("Script loaded");
