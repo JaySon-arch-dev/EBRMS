@@ -4,24 +4,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EBRMS - Faculty Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Faculty Dashboard | EBRMS</title>
+  <link rel="stylesheet" href="/faculty/style.css">
 </head>
 <body>
-  <main class="dashboard">
-    <h1>Faculty Dashboard</h1>
-    <p>Authorization Test</p>
+  <header>
+    <h1>EBRMS</h1>
+    <p>Faculty Dashboard</p>
+  </header>
 
-    <button id="authTestButton" type="button">
-      Test Authorization
-    </button>
+  <main>
+    <section>
+      <h2>Welcome, Faculty</h2>
+      <p>
+        You are viewing the Faculty Dashboard.
+        Your session and role are checked when this page loads.
+      </p>
+    </section>
 
-    <p id="authTestMessage" role="status" aria-live="polite">
-      Tap the button to test your session.
-    </p>
+    <section>
+      <h2>Request Equipment</h2>
+      <p>Equipment borrowing request features will appear here.</p>
+    </section>
+
+    <section>
+      <h2>Manage Borrowings</h2>
+      <p>Borrowing requests and return transactions will appear here.</p>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
+  <script src="/faculty/script.js"></script>
 </body>
 </html>
