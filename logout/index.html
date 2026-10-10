@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signing Out | EBRMS</title>
+  <link rel="stylesheet" href="/logout/style.css">
+</head>
+<body>
+  <main class="logout-container">
+    <h1>EBRMS</h1>
+
+    <section class="logout-card">
+      <h2 id="logoutTitle">Signing you out...</h2>
+
+      <p id="logoutMessage">
+        Please wait while we end your session.
+      </p>
+
+      <button id="retryButton" type="button" hidden>
+        Try Again
+      </button>
+
+      <a id="loginLink" href="/login/" hidden>
+        Return to Login
+      </a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/logout/script.js"></script>
+</body>
+</html>
