@@ -3,10 +3,9 @@ const SUPABASE_URL =
   "https://lrlzlzfulcajbuqeufym.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
+  "sb_publishable_zVdMyZmwz8nOo4YHqY9pg_JSoMivtn";
 
-// Set this separately in each dashboard.
-const EXPECTED_ROLE = "Student" ;
+const EXPECTED_ROLE = "Student";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
@@ -27,7 +26,7 @@ async function checkDashboardAccess() {
 
     if (error || !data.session?.access_token) {
       window.location.replace("/login/");
-      return false;
+      return;
     }
 
     const response = await fetch("/api/auth-check", {
@@ -38,34 +37,28 @@ async function checkDashboardAccess() {
       cache: "no-store"
     });
 
-    const result = await response.json();
-
-    if (
-      !response.ok ||
-      result.user?.role !== EXPECTED_ROLE
-    ) {
+    if (!response.ok) {
       window.location.replace("/login/");
-      return false;
+      return;
     }
 
-    // The session and expected role passed the check.
-    document.body.classList.add("authorized");
-    return true;
+    const result = await response.json();
 
+    if (!result.user || result.user.role !== EXPECTED_ROLE) {
+      window.location.replace("/login/");
+      return;
+    }
+
+    // Reveal the dashboard only after authorization succeeds.
+    document.body.style.visibility = "visible";
+
+    console.log("Student dashboard authorized.");
   } catch (error) {
-    console.error("Dashboard access check failed:", error);
+    console.error("Dashboard authorization failed:", error);
     window.location.replace("/login/");
-    return false;
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  document.body.classList.remove("authorized");
-
-  const allowed = await checkDashboardAccess();
-
-  if (!allowed) return;
-
-  // Initialize dashboard features here, after access is checked.
-  console.log(`${EXPECTED_ROLE} dashboard authorized.`);
+document.addEventListener("DOMContentLoaded", () => {
+  checkDashboardAccess();
 });
