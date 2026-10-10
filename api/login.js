@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
 
         const { data: profile, error: lookupError } = await admin
             .from("users")
-            .select("user_id, full_name, email, role")
+            .select("user_id, full_name, email, role, status")
             .eq("user_id", userId.trim())
             .maybeSingle();
 
@@ -64,7 +64,11 @@ module.exports = async function handler(req, res) {
                 message: "Incorrect User ID or password."
             });
         }
-
+if (profile.status !== "Active") {
+    return res.status(403).json({
+        message: "Your account is inactive. Please contact the administrator."
+    });
+}
         // 2. Authenticate using Supabase Auth.
         // The public.users.password column is NOT used here.
         const auth = createClient(url, publishable, {
