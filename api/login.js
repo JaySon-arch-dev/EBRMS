@@ -37,7 +37,7 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        // 1. Look up the profile using the UserID.
+        // 1. Look up the profile by User ID.
         const admin = createClient(url, secret, {
             auth: {
                 persistSession: false,
@@ -61,12 +61,15 @@ module.exports = async function handler(req, res) {
         }
 
         if (!profile || !profile.email) {
+            console.warn("Login rejected: no matching user profile.");
+
             return res.status(401).json({
                 message: "Incorrect User ID or password."
             });
         }
 
-        // 2. Verify the password through Supabase Auth.
+        // 2. Authenticate with Supabase Auth.
+        // Never compare or store plaintext passwords in public.users.
         const auth = createClient(url, publishable, {
             auth: {
                 persistSession: false,
@@ -80,30 +83,34 @@ module.exports = async function handler(req, res) {
             password
         });
 
-        
-if (error || !data.user || !data.session) {
-    console.error("Supabase Auth diagnostic:", {
-        code: error?.code,
-        status: error?.status,
-        message: error?.message
-    });
+        if (error || !data?.user || !data?.session) {
+            console.error("Supabase Auth diagnostic:", {
+                userId: profile.user_id,
+                code: error?.code,
+                status: error?.status,
+                message: error?.message
+            });
 
-    return res.status(401).json({
-        message: "Incorrect User ID or password."
-    });
-}
-        // 3. Confirm that the authenticated email matches the profile.
+            return res.status(401).json({
+                message: "Incorrect User ID or password."
+            });
+        }
+
+        // 3. Verify that the authenticated account matches the profile.
         if (
             !data.user.email ||
             data.user.email.toLowerCase() !==
-                profile.email.toLowerCase()
+                profile.email.trim().toLowerCase()
         ) {
+            console.error("Authenticated email does not match profile.");
+
             return res.status(401).json({
                 message: "Unable to authenticate this account."
             });
         }
 
-        // 4. Return the session and basic profile information.
+        // 4. Return the authenticated session and basic profile.
+        // Account status is intentionally not enforced yet.
         return res.status(200).json({
             message: "Login successful.",
             session: {
