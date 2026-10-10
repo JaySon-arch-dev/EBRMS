@@ -1,0 +1,76 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  background: #f5f2eb;
+  color: #302d28;
+}
+
+.logout-container {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.logout-container > h1 {
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+.logout-card {
+  padding: 28px 22px;
+  background: #ffffff;
+  border: 1px solid #e4dfd5;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.logout-card h2 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.logout-card p {
+  line-height: 1.6;
+  color: #625d54;
+}
+
+button,
+.logout-card a {
+  display: inline-block;
+  margin: 12px 6px 0;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button {
+  background: #514735;
+  color: #ffffff;
+}
+
+.logout-card a {
+  color: #514735;
+  border: 1px solid #d8d0c3;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+[hidden] {
+  display: none !important;
+}
