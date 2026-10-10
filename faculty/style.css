@@ -19,3 +19,18 @@ body {
 h1 {
     margin-bottom: 12px;
 }
+
+.sign-out-button {
+  display: inline-block;
+  padding: 10px 16px;
+  margin-top: 10px;
+  background: #514735;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.sign-out-button:hover {
+  opacity: 0.85;
+}
