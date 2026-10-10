@@ -6,6 +6,7 @@ module.exports = async function handler(req, res) {
 
     if (req.method !== "POST") {
         res.setHeader("Allow", "POST");
+
         return res.status(405).json({
             message: "Method not allowed."
         });
@@ -37,11 +38,11 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        // 1. Find the user profile using the entered UserID.
         const admin = createClient(url, secret, {
             auth: {
                 persistSession: false,
-                autoRefreshToken: false
+                autoRefreshToken: false,
+                detectSessionInUrl: false
             }
         });
 
@@ -64,17 +65,12 @@ module.exports = async function handler(req, res) {
                 message: "Incorrect User ID or password."
             });
         }
-if (profile.status !== "Active") {
-    return res.status(403).json({
-        message: "Your account is inactive. Please contact the administrator."
-    });
-}
-        // 2. Authenticate using Supabase Auth.
-        // The public.users.password column is NOT used here.
+
         const auth = createClient(url, publishable, {
             auth: {
                 persistSession: false,
-                autoRefreshToken: false
+                autoRefreshToken: false,
+                detectSessionInUrl: false
             }
         });
 
@@ -83,31 +79,35 @@ if (profile.status !== "Active") {
             password
         });
 
-        if (error || !data.user || !data.session) {
-            console.error("Supabase Auth diagnostic:", {
-                userId: profile.user_id,
-                code: error?.code,
-                status: error?.status,
-                message: error?.message
-            });
-
+        if (error || !data?.user || !data?.session) {
             return res.status(401).json({
                 message: "Incorrect User ID or password."
             });
         }
 
-        // 3. Confirm the authenticated email matches the profile.
         if (
             !data.user.email ||
             data.user.email.toLowerCase() !==
-                profile.email.toLowerCase()
+                profile.email.trim().toLowerCase()
         ) {
             return res.status(401).json({
                 message: "Unable to authenticate this account."
             });
         }
 
-        // 4. Return the authenticated session and profile.
+        // Check account status after verifying the password.
+        if (profile.status !== "Active") {
+            return res.status(403).json({
+                message: "Your account is inactive. Please contact the administrator."
+            });
+        }
+
+        if (!["Student", "Faculty", "Admin"].includes(profile.role)) {
+            return res.status(403).json({
+                message: "Your account has an invalid role."
+            });
+        }
+
         return res.status(200).json({
             message: "Login successful.",
             session: {
