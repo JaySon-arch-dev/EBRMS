@@ -2,20 +2,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Student Dashboard | EBRMS</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | EBRMS</title>
+  <link rel="stylesheet" href="/student/style.css">
 </head>
 <body>
-    <main class="dashboard">
-        <h1>Student Dashboard</h1>
-        <p>Welcome to the Equipment Borrowing and Returning Management System.</p>
-        <section id="modules">
-            <!-- Student modules will go here. -->
-        </section>
-    </main>
-    <script src="script.js"></script>
+  <header>
+    <h1>EBRMS</h1>
+    <p>Student Dashboard</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Welcome, Student</h2>
+      <p>
+        You are viewing the Student Dashboard.
+        Your session and role are checked when this page loads.
+      </p>
+    </section>
+
+    <section>
+      <h2>Equipment Borrowing</h2>
+      <p>Equipment borrowing features will appear here.</p>
+    </section>
+
+    <section>
+      <h2>Borrowing History</h2>
+      <p>Your borrowing transactions will appear here.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/student/script.js"></script>
 </body>
 </html>
-      
