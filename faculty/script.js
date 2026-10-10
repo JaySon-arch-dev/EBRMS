@@ -34,11 +34,12 @@ async function testAuthorization() {
         ? ` | User: ${result.user.user_id}` +
           ` | Role: ${result.user.role}`
         : "");
-  } catch (error) {
-    console.error("Authorization test failed:", error);
 
-    message.textContent =
-      "Could not complete the test. Check the console or deployment.";
+} catch (error) {
+  console.error("Authorization test failed:", error);
+
+  message.textContent =
+    "Error: " + (error.message || String(error));
   }
 }
 
