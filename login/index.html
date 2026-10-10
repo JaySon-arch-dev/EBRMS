@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f2f4f7">
+    <meta name="description" content="EBRMS account login">
+    <title>EBRMS | Login</title>
+    <link rel="stylesheet" href="/login/style.css">
+</head>
+<body>
+    <main class="login-container">
+        <section class="login-card">
+            <header class="login-header">
+                <h1>EBRMS</h1>
+                <p class="subtitle">
+                    Equipment Borrowing and Returning
+                    Management System
+                </p>
+            </header>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input
+                        type="text"
+                        id="userId"
+                        name="userId"
+                        placeholder="Enter User ID"
+                        autocomplete="username"
+                        autocapitalize="none"
+                        spellcheck="false"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-container">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter Password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="login-button"
+                >
+                    Login
+                </button>
+
+                <p
+                    id="message"
+                    class="message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+            </form>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/login/script.js"></script>
+</body>
+  </html>
