@@ -80,12 +80,18 @@ module.exports = async function handler(req, res) {
             password
         });
 
-        if (error || !data.user || !data.session) {
-            return res.status(401).json({
-                message: "Incorrect User ID or password."
-            });
-        }
+        
+if (error || !data.user || !data.session) {
+    console.error("Supabase Auth diagnostic:", {
+        code: error?.code,
+        status: error?.status,
+        message: error?.message
+    });
 
+    return res.status(401).json({
+        message: "Incorrect User ID or password."
+    });
+}
         // 3. Confirm that the authenticated email matches the profile.
         if (
             !data.user.email ||
