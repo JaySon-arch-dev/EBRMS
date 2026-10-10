@@ -2,70 +2,51 @@
 (() => {
     "use strict";
 
-    document.addEventListener("DOMContentLoaded", initializeLogin);
+    const SUPABASE_URL =
+        "https://lrlzlzfulcajbuqeufym.supabase.co";
 
-    function initializeLogin() {
-        const loginForm = document.getElementById("loginForm");
-        const userIdInput = document.getElementById("userId");
-        const passwordInput = document.getElementById("password");
-        const togglePassword = document.getElementById("togglePassword");
-        const loginButton = document.getElementById("loginButton");
-        const message = document.getElementById("message");
-        const userInfo = document.getElementById("userInfo");
-        const displayName = document.getElementById("displayName");
-        const displayRole = document.getElementById("displayRole");
+    // This is the public publishable key, not the secret key.
+    const SUPABASE_KEY =
+        "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
-        const requiredElements = [
-            loginForm,
-            userIdInput,
-            passwordInput,
-            togglePassword,
-            loginButton,
-            message,
-            userInfo,
-            displayName,
-            displayRole
-        ];
+    const loginForm = document.getElementById("loginForm");
+    const userIdInput = document.getElementById("userId");
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const loginButton = document.getElementById("loginButton");
 
-        if (requiredElements.some(element => !element)) {
-            console.error("Login initialization failed: HTML element missing.");
-            return;
-        }
+    const message = document.getElementById("message");
+    const userInfo = document.getElementById("userInfo");
+    const displayName = document.getElementById("displayName");
+    const displayRole = document.getElementById("displayRole");
 
-        // The publishable key is safe for browser-side use.
-        const SUPABASE_URL =
-            "https://lrlzlzfulcajbuqeufym.supabase.co";
+    function showMessage(text, type = "") {
+        message.textContent = text;
+        message.className = type
+            ? `message ${type}`
+            : "message";
+    }
 
-        const SUPABASE_KEY =
-            "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
+    function setLoading(loading) {
+        loginButton.disabled = loading;
+        loginButton.textContent = loading
+            ? "Checking..."
+            : "Login";
+    }
 
-        if (!window.supabase?.createClient) {
-            showMessage(
-                "The authentication library failed to load. Reload the page.",
-                "error"
-            );
-            return;
-        }
-
+    // Initialize the browser's Supabase client.
+    if (!window.supabase?.createClient) {
+        showMessage(
+            "Authentication library failed to load. Refresh the page.",
+            "error"
+        );
+    } else {
         const supabaseClient = window.supabase.createClient(
             SUPABASE_URL,
             SUPABASE_KEY
         );
 
-        function showMessage(text, type = "") {
-            message.textContent = text;
-            message.className = type
-                ? `message ${type}`
-                : "message";
-        }
-
-        function setLoading(loading) {
-            loginButton.disabled = loading;
-            loginButton.textContent = loading
-                ? "Checking..."
-                : "Login";
-        }
-
+        // Show or hide password.
         togglePassword.addEventListener("click", () => {
             const showing = passwordInput.type === "text";
 
@@ -73,7 +54,8 @@
             togglePassword.textContent = showing ? "Show" : "Hide";
         });
 
-        loginForm.addEventListener("submit", async event => {
+        // Submit login credentials to the server.
+        loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             if (loginButton.disabled) return;
@@ -93,10 +75,10 @@
             }
 
             setLoading(true);
-            showMessage("Verifying your credentials...", "warning");
+            showMessage("Verifying credentials...", "warning");
 
             try {
-                // All UserID lookup and password verification happen server-side.
+                // 1. Send UserID and password to Vercel.
                 const response = await fetch("/api/login", {
                     method: "POST",
                     headers: {
@@ -111,7 +93,7 @@
                 if (!response.ok) {
                     showMessage(
                         result?.message ||
-                        `Login failed (HTTP ${response.status}).`,
+                            `Login failed (HTTP ${response.status}).`,
                         "error"
                     );
                     return;
@@ -122,10 +104,12 @@
                     !result?.session?.refresh_token ||
                     !result?.user
                 ) {
-                    throw new Error("The server returned an incomplete login response.");
+                    throw new Error(
+                        "Incomplete authentication response."
+                    );
                 }
 
-                // Establish the session in the browser's Supabase client.
+                // 2. Establish the Supabase session in the browser.
                 const { error: sessionError } =
                     await supabaseClient.auth.setSession({
                         access_token: result.session.access_token,
@@ -136,11 +120,13 @@
                     throw sessionError;
                 }
 
+                // 3. Display the authenticated user's profile.
                 displayName.textContent = result.user.full_name;
                 displayRole.textContent = result.user.role;
-                userInfo.classList.remove("hidden");
 
+                userInfo.classList.remove("hidden");
                 passwordInput.value = "";
+
                 showMessage("Login successful!", "success");
 
             } catch (error) {
@@ -154,8 +140,5 @@
                 setLoading(false);
             }
         });
-
-        // Verify that the client is initialized without exposing credentials.
-        console.info("EBRMS login module initialized.");
     }
 })();
