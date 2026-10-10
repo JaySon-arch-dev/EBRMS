@@ -5,9 +5,16 @@
     const SUPABASE_URL =
         "https://lrlzlzfulcajbuqeufym.supabase.co";
 
-    // Public publishable key. Never put the secret key here.
+    // Public publishable key only. Never expose the secret key here.
     const SUPABASE_KEY =
         "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
+
+    // Dashboard routes based on the role returned by the login API.
+    const roleRoutes = {
+        Student: "/student/",
+        Faculty: "/faculty/",
+        Admin: "/admin/"
+    };
 
     const loginForm = document.getElementById("loginForm");
     const userIdInput = document.getElementById("userId");
@@ -15,40 +22,40 @@
     const togglePassword = document.getElementById("togglePassword");
     const loginButton = document.getElementById("loginButton");
     const message = document.getElementById("message");
-    const userInfo = document.getElementById("userInfo");
-    const displayName = document.getElementById("displayName");
-    const displayRole = document.getElementById("displayRole");
 
     function showMessage(text, type = "") {
         message.textContent = text;
-        message.className = type ? `message ${type}` : "message";
+        message.className = type
+            ? `message ${type}`
+            : "message";
     }
 
     function setLoading(loading) {
         loginButton.disabled = loading;
-        loginButton.textContent = loading ? "Checking..." : "Login";
+        loginButton.textContent = loading
+            ? "Checking..."
+            : "Login";
     }
 
-    // Check that the required HTML elements exist.
+    // Verify that the expected login form elements exist.
     if (
         !loginForm ||
         !userIdInput ||
         !passwordInput ||
         !togglePassword ||
         !loginButton ||
-        !message ||
-        !userInfo ||
-        !displayName ||
-        !displayRole
+        !message
     ) {
-        console.error("One or more login form elements are missing.");
+        console.error(
+            "Login initialization failed: required HTML elements are missing."
+        );
         return;
     }
 
-    // Initialize the browser Supabase client.
+    // Initialize Supabase.
     if (!window.supabase?.createClient) {
         showMessage(
-            "Authentication library failed to load. Refresh the page.",
+            "Authentication library failed to load. Please refresh the page.",
             "error"
         );
         return;
@@ -59,15 +66,15 @@
         SUPABASE_KEY
     );
 
-    // Show or hide the password.
+    // Toggle password visibility.
     togglePassword.addEventListener("click", () => {
-        const showing = passwordInput.type === "text";
+        const isHidden = passwordInput.type === "password";
 
-        passwordInput.type = showing ? "password" : "text";
-        togglePassword.textContent = showing ? "Show" : "Hide";
+        passwordInput.type = isHidden ? "text" : "password";
+        togglePassword.textContent = isHidden ? "Hide" : "Show";
     });
 
-    // Handle login submission.
+    // Handle login form submission.
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -77,7 +84,6 @@
         const password = passwordInput.value;
 
         showMessage("");
-        userInfo.classList.add("hidden");
 
         if (!userId || !password) {
             showMessage(
@@ -91,7 +97,7 @@
         showMessage("Verifying credentials...", "warning");
 
         try {
-            // Step 1: Send credentials to the Vercel API.
+            // 1. Authenticate through the server-side login API.
             const response = await fetch("/api/login", {
                 method: "POST",
                 headers: {
@@ -115,17 +121,19 @@
                 return;
             }
 
+            // 2. Validate the returned session and user profile.
             if (
                 !result?.session?.access_token ||
                 !result?.session?.refresh_token ||
-                !result?.user
+                !result?.user?.user_id ||
+                !result?.user?.role
             ) {
                 throw new Error(
-                    "Incomplete authentication response."
+                    "The login API returned an incomplete response."
                 );
             }
 
-            // Step 2: Establish the Supabase session in the browser.
+            // 3. Establish the Supabase session in the browser.
             const { error: sessionError } =
                 await supabaseClient.auth.setSession({
                     access_token: result.session.access_token,
@@ -136,14 +144,21 @@
                 throw sessionError;
             }
 
-            // Step 3: Display the authenticated user's information.
-            displayName.textContent = result.user.full_name;
-            displayRole.textContent = result.user.role;
+            // 4. Determine the dashboard using the verified profile role.
+            const destination = roleRoutes[result.user.role];
 
-            userInfo.classList.remove("hidden");
-            passwordInput.value = "";
+            if (!destination) {
+                await supabaseClient.auth.signOut();
 
-            showMessage("Login successful!", "success");
+                showMessage(
+                    "Your account has no valid role assigned.",
+                    "error"
+                );
+                return;
+            }
+
+            // 5. Redirect to the corresponding dashboard.
+            window.location.replace(destination);
 
         } catch (error) {
             console.error("Login flow failed:", error);
