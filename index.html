@@ -1,20 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>EBRMS Login</title>
-
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#f2f4f7">
+    <title>EBRMS | Login</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
-
     <main class="login-container">
-
         <section class="login-card">
-
             <h1>EBRMS</h1>
 
             <p class="subtitle">
@@ -23,37 +19,28 @@
             </p>
 
             <form id="loginForm">
-
-                <!-- USER ID -->
                 <div class="form-group">
-
-                    <label for="userId">
-                        User ID
-                    </label>
-
+                    <label for="userId">User ID</label>
                     <input
                         type="text"
                         id="userId"
+                        name="userId"
                         placeholder="Enter User ID"
                         autocomplete="username"
+                        autocapitalize="none"
+                        spellcheck="false"
                         required
                     >
-
                 </div>
 
-
-                <!-- PASSWORD -->
                 <div class="form-group">
-
-                    <label for="password">
-                        Password
-                    </label>
+                    <label for="password">Password</label>
 
                     <div class="password-container">
-
                         <input
                             type="password"
                             id="password"
+                            name="password"
                             placeholder="Enter Password"
                             autocomplete="current-password"
                             required
@@ -62,16 +49,14 @@
                         <button
                             type="button"
                             id="togglePassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
                         >
                             Show
                         </button>
-
                     </div>
-
                 </div>
 
-
-                <!-- LOGIN BUTTON -->
                 <button
                     type="submit"
                     id="loginButton"
@@ -80,43 +65,33 @@
                     Login
                 </button>
 
-
-                <!-- NOTIFICATION -->
-                <div
+                <p
                     id="message"
                     class="message"
-                    role="alert"
-                ></div>
-
+                    role="status"
+                    aria-live="polite"
+                ></p>
             </form>
 
-
-            <!-- SUCCESS INFORMATION -->
-            <div
+            <section
                 id="userInfo"
                 class="user-info hidden"
+                aria-live="polite"
             >
-
                 <h2>Login Successful</h2>
-
                 <p>
                     Welcome,
                     <strong id="displayName"></strong>
                 </p>
-
                 <p>
                     Role:
                     <strong id="displayRole"></strong>
                 </p>
-
-            </div>
-
+            </section>
         </section>
-
     </main>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
