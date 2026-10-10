@@ -32,12 +32,12 @@ module.exports = async function handler(req, res) {
         console.error("Missing Supabase environment configuration.");
 
         return res.status(500).json({
-            message: "Server configuration error. Contact the administrator."
+            message: "Server configuration error."
         });
     }
 
     try {
-        // Server-only client: retrieve the account profile.
+        // 1. Look up the profile using the UserID.
         const admin = createClient(url, secret, {
             auth: {
                 persistSession: false,
@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
 
         const { data: profile, error: lookupError } = await admin
             .from("users")
-            .select("user_id, full_name, email, role, status")
+            .select("user_id, full_name, email, role")
             .eq("user_id", userId.trim())
             .maybeSingle();
 
@@ -66,13 +66,7 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        if (profile.status !== "Active") {
-            return res.status(403).json({
-                message: "This account is inactive."
-            });
-        }
-
-        // Separate client: authenticate through Supabase Auth.
+        // 2. Verify the password through Supabase Auth.
         const auth = createClient(url, publishable, {
             auth: {
                 persistSession: false,
@@ -92,15 +86,18 @@ module.exports = async function handler(req, res) {
             });
         }
 
+        // 3. Confirm that the authenticated email matches the profile.
         if (
             !data.user.email ||
-            data.user.email.toLowerCase() !== profile.email.toLowerCase()
+            data.user.email.toLowerCase() !==
+                profile.email.toLowerCase()
         ) {
             return res.status(401).json({
                 message: "Unable to authenticate this account."
             });
         }
 
+        // 4. Return the session and basic profile information.
         return res.status(200).json({
             message: "Login successful.",
             session: {
@@ -113,6 +110,7 @@ module.exports = async function handler(req, res) {
                 role: profile.role
             }
         });
+
     } catch (error) {
         console.error("Login API error:", error.message);
 
