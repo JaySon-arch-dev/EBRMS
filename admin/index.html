@@ -2,20 +2,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard | EBRMS</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | EBRMS</title>
+  <link rel="stylesheet" href="/admin/style.css">
 </head>
 <body>
-    <main class="dashboard">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome to the Equipment Borrowing and Returning Management System.</p>
-        <section id="modules">
-            <!-- Student modules will go here. -->
-        </section>
-    </main>
-    <script src="script.js"></script>
+  <header>
+    <h1>EBRMS</h1>
+    <p>Administrator Dashboard</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Welcome, Administrator</h2>
+      <p>
+        You are viewing the Administrator Dashboard.
+        Your session and role are checked when this page loads.
+      </p>
+    </section>
+
+    <section>
+      <h2>User Management</h2>
+      <p>User account management features will appear here.</p>
+    </section>
+
+    <section>
+      <h2>Equipment Management</h2>
+      <p>Equipment records and availability features will appear here.</p>
+    </section>
+
+    <section>
+      <h2>Transaction Monitoring</h2>
+      <p>Borrowing and returning records will appear here.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/admin/script.js"></script>
 </body>
 </html>
-      
