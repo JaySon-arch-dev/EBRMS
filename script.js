@@ -1,144 +1,131 @@
 
-(() => {
-    "use strict";
+const SUPABASE_URL =
+    "https://lrlzlzfulcajbuqeufym.supabase.co";
 
-    const SUPABASE_URL =
-        "https://lrlzlzfulcajbuqeufym.supabase.co";
+const SUPABASE_KEY =
+    "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
-    // This is the public publishable key, not the secret key.
-    const SUPABASE_KEY =
-        "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: false
+        }
+    }
+);
 
-    const loginForm = document.getElementById("loginForm");
-    const userIdInput = document.getElementById("userId");
-    const passwordInput = document.getElementById("password");
-    const togglePassword = document.getElementById("togglePassword");
-    const loginButton = document.getElementById("loginButton");
+const loginForm = document.getElementById("loginForm");
+const userIdInput = document.getElementById("userId");
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const loginButton = document.getElementById("loginButton");
+const message = document.getElementById("message");
+const userInfo = document.getElementById("userInfo");
+const displayName = document.getElementById("displayName");
+const displayRole = document.getElementById("displayRole");
 
-    const message = document.getElementById("message");
-    const userInfo = document.getElementById("userInfo");
-    const displayName = document.getElementById("displayName");
-    const displayRole = document.getElementById("displayRole");
+// Show / hide password
+togglePassword.addEventListener("click", function () {
+    const showing = passwordInput.type === "password";
 
-    function showMessage(text, type = "") {
-        message.textContent = text;
-        message.className = type
-            ? `message ${type}`
-            : "message";
+    passwordInput.type = showing ? "text" : "password";
+    togglePassword.textContent = showing ? "Hide" : "Show";
+});
+
+// Login through the server API
+loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const userId = userIdInput.value.trim();
+    const password = passwordInput.value;
+
+    message.textContent = "";
+    message.className = "message";
+    userInfo.classList.add("hidden");
+
+    if (!userId || !password) {
+        message.textContent =
+            "Please enter your User ID and Password.";
+        message.className = "message warning";
+        return;
     }
 
-    function setLoading(loading) {
-        loginButton.disabled = loading;
-        loginButton.textContent = loading
-            ? "Checking..."
-            : "Login";
-    }
+    loginButton.disabled = true;
+    loginButton.textContent = "Checking...";
 
-    // Initialize the browser's Supabase client.
-    if (!window.supabase?.createClient) {
-        showMessage(
-            "Authentication library failed to load. Refresh the page.",
-            "error"
-        );
-    } else {
-        const supabaseClient = window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
-
-        // Show or hide password.
-        togglePassword.addEventListener("click", () => {
-            const showing = passwordInput.type === "text";
-
-            passwordInput.type = showing ? "password" : "text";
-            togglePassword.textContent = showing ? "Show" : "Hide";
+    try {
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userId,
+                password
+            }),
+            cache: "no-store"
         });
 
-        // Submit login credentials to the server.
-        loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+        const result = await response.json();
 
-            if (loginButton.disabled) return;
+        if (!response.ok) {
+            message.textContent =
+                result.message || "Login failed.";
+            message.className = "message error";
+            return;
+        }
 
-            const userId = userIdInput.value.trim();
-            const password = passwordInput.value;
+        if (
+            !result.session?.access_token ||
+            !result.session?.refresh_token ||
+            !result.user
+        ) {
+            console.error("Invalid login API response.");
 
-            showMessage("");
-            userInfo.classList.add("hidden");
+            message.textContent =
+                "Unable to complete login. Please try again.";
+            message.className = "message error";
+            return;
+        }
 
-            if (!userId || !password) {
-                showMessage(
-                    "Please enter your User ID and password.",
-                    "warning"
-                );
-                return;
-            }
+        const { error: sessionError } =
+            await supabaseClient.auth.setSession({
+                access_token: result.session.access_token,
+                refresh_token: result.session.refresh_token
+            });
 
-            setLoading(true);
-            showMessage("Verifying credentials...", "warning");
+        if (sessionError) {
+            console.error(
+                "Session setup failed:",
+                sessionError.message
+            );
 
-            try {
-                // 1. Send UserID and password to Vercel.
-                const response = await fetch("/api/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify({ userId, password })
-                });
+            message.textContent =
+                "Login succeeded, but the session could not be saved.";
+            message.className = "message error";
+            return;
+        }
 
-                const result = await response.json().catch(() => null);
+        displayName.textContent = result.user.full_name;
+        displayRole.textContent = result.user.role;
 
-                if (!response.ok) {
-                    showMessage(
-                        result?.message ||
-                            `Login failed (HTTP ${response.status}).`,
-                        "error"
-                    );
-                    return;
-                }
+        userInfo.classList.remove("hidden");
 
-                if (
-                    !result?.session?.access_token ||
-                    !result?.session?.refresh_token ||
-                    !result?.user
-                ) {
-                    throw new Error(
-                        "Incomplete authentication response."
-                    );
-                }
+        message.textContent = "Login successful!";
+        message.className = "message success";
 
-                // 2. Establish the Supabase session in the browser.
-                const { error: sessionError } =
-                    await supabaseClient.auth.setSession({
-                        access_token: result.session.access_token,
-                        refresh_token: result.session.refresh_token
-                    });
+    } catch (error) {
+        console.error("Login request failed:", error.message);
 
-                if (sessionError) {
-                    throw sessionError;
-                }
+        message.textContent =
+            "Unable to connect to the login service.";
+        message.className = "message error";
 
-                // 3. Display the authenticated user's profile.
-                displayName.textContent = result.user.full_name;
-                displayRole.textContent = result.user.role;
-
-                userInfo.classList.remove("hidden");
-                passwordInput.value = "";
-
-                showMessage("Login successful!", "success");
-
-            } catch (error) {
-                console.error("Login flow failed:", error);
-
-                showMessage(
-                    "Unable to complete login. Check your connection and try again.",
-                    "error"
-                );
-            } finally {
-                setLoading(false);
-            }
-        });
+    } finally {
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
     }
-})();
+});
