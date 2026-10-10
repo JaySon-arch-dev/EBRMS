@@ -1,31 +1,27 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    
-<div>
-  <button id="authTestButton" type="button">
-    Test Authorization
-  </button>
-
-  <p id="authTestMessage">
-    Tap the button to test your session.
-  </p>
-</div> 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Faculty Dashboard | EBRMS</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBRMS - Faculty Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="dashboard">
-        <h1>Faculty Dashboard</h1>
-        <p>Welcome to the Equipment Borrowing and Returning Management System.</p>
-        <section id="modules">
-            <!-- Student modules will go here. -->
-        </section>
-    </main>
-    <script src="script.js"></script>
+  <main class="dashboard">
+    <h1>Faculty Dashboard</h1>
+    <p>Authorization Test</p>
+
+    <button id="authTestButton" type="button">
+      Test Authorization
+    </button>
+
+    <p id="authTestMessage" role="status" aria-live="polite">
+      Tap the button to test your session.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-      
