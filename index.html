@@ -4,94 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f2f4f7">
-    <title>EBRMS | Login</title>
-    <link rel="stylesheet" href="/style.css">
+    <meta http-equiv="refresh" content="0; url=/login/">
+    <title>EBRMS</title>
 </head>
 <body>
-    <main class="login-container">
-        <section class="login-card">
-            <h1>EBRMS</h1>
+    <p>
+        Redirecting to
+        <a href="/login/">EBRMS Login</a>...
+    </p>
 
-            <p class="subtitle">
-                Equipment Borrowing and Returning
-                Management System
-            </p>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="userId">User ID</label>
-                    <input
-                        type="text"
-                        id="userId"
-                        name="userId"
-                        placeholder="Enter User ID"
-                        autocomplete="username"
-                        autocapitalize="none"
-                        spellcheck="false"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-
-                    <div class="password-container">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter Password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            id="togglePassword"
-                            aria-label="Show password"
-                            aria-pressed="false"
-                        >
-                            Show
-                        </button>
-                    </div>
-                </div>
-
-                <button
-                    type="submit"
-                    id="loginButton"
-                    class="login-button"
-                >
-                    Login
-                </button>
-
-                <p
-                    id="message"
-                    class="message"
-                    role="status"
-                    aria-live="polite"
-                ></p>
-            </form>
-
-            <section
-                id="userInfo"
-                class="user-info hidden"
-                aria-live="polite"
-            >
-                <h2>Login Successful</h2>
-                <p>
-                    Welcome,
-                    <strong id="displayName"></strong>
-                </p>
-                <p>
-                    Role:
-                    <strong id="displayRole"></strong>
-                </p>
-            </section>
-        </section>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/script.js"></script>
+    <script>
+        window.location.replace("/login/");
+    </script>
 </body>
 </html>
