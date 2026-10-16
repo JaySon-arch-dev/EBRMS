@@ -15,10 +15,10 @@
   const SUPABASE_KEY =
     "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
-  const HOME_URL = "/student/";
   const MOBILE_QUERY = window.matchMedia("(max-width: 899px)");
 
   const body = document.body;
+  const HOME_URL = body.dataset.home || "/";
   const panel = document.getElementById("menuPanel");
   const scrim = document.getElementById("menuScrim");
   const toggle = document.getElementById("menuToggle");
