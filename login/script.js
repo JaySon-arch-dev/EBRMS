@@ -1,4 +1,3 @@
-
 const SUPABASE_URL =
     "https://lrlzlzfulcajbuqeufym.supabase.co";
 
@@ -23,29 +22,72 @@ const roleRoutes = {
     Admin: "/admin/"
 };
 
+/* ---------- DOM references ---------- */
+
 const loginForm = document.getElementById("loginForm");
 const userIdInput = document.getElementById("userId");
 const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
 const loginButton = document.getElementById("loginButton");
+const buttonText = loginButton.querySelector(".button-text");
 const message = document.getElementById("message");
+
+/* ---------- Icons for the password toggle ---------- */
+
+const EYE_ICON = `
+    <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linejoin="round"/>
+    <circle cx="12" cy="12" r="3"
+            stroke="currentColor" stroke-width="1.7"/>
+`;
+
+const EYE_OFF_ICON = `
+    <path d="M3 3l18 18"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round"/>
+    <path d="M10.6 5.1A9.7 9.7 0 0 1 12 5c6 0 9.5 7 9.5 7a16 16 0 0 1-3.2 4.1M6.6 6.6A15.7 15.7 0 0 0 2.5 12s3.5 7 9.5 7a9.3 9.3 0 0 0 4-.9"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round"/>
+`;
+
+const eyeIcon = togglePassword.querySelector(".eye-icon");
+
+/* ---------- Helpers ---------- */
 
 function showMessage(text, type = "error") {
     message.textContent = text;
     message.className = `message ${type}`;
 }
 
+function setButtonLabel(text) {
+    // Only change the label; keep the arrow icon inside the button intact.
+    buttonText.textContent = text;
+}
+
+/* ---------- Password visibility ---------- */
+
 togglePassword.addEventListener("click", () => {
     const showing = passwordInput.type === "password";
 
     passwordInput.type = showing ? "text" : "password";
-    togglePassword.textContent = showing ? "Hide" : "Show";
+
+    // Swap the icon instead of replacing the button's content with text.
+    eyeIcon.innerHTML = showing ? EYE_OFF_ICON : EYE_ICON;
+    togglePassword.classList.toggle("is-visible", showing);
+
     togglePassword.setAttribute("aria-pressed", String(showing));
     togglePassword.setAttribute(
         "aria-label",
         showing ? "Hide password" : "Show password"
     );
 });
+
+/* ---------- Login ---------- */
 
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -65,7 +107,7 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     loginButton.disabled = true;
-    loginButton.textContent = "Checking...";
+    setButtonLabel("Checking...");
 
     try {
         const response = await fetch("/api/login", {
@@ -132,6 +174,6 @@ loginForm.addEventListener("submit", async (event) => {
         );
     } finally {
         loginButton.disabled = false;
-        loginButton.textContent = "Login";
+        setButtonLabel("Login");
     }
 });
