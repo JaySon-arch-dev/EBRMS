@@ -1,34 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signing Out | EBRMS</title>
-  <link rel="stylesheet" href="/logout/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8ff">
+    <meta name="robots" content="noindex">
+
+    <title>Signing Out | EBRMS</title>
+
+    <link rel="stylesheet" href="/logout/style.css">
 </head>
 <body>
-  <main class="logout-container">
-    <h1>EBRMS</h1>
+    <main class="logout-page">
 
-    <section class="logout-card">
-      <h2 id="logoutTitle">Signing you out...</h2>
+        <a class="brand-logo" href="/login/" aria-label="EBRMS login">
+            <span class="brand-logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>EBRMS<span class="brand-period">.</span></span>
+        </a>
 
-      <p id="logoutMessage">
-        Please wait while we end your session.
-      </p>
+        <section
+            id="logoutCard"
+            class="logout-card"
+            data-state="loading"
+            aria-labelledby="logoutTitle"
+        >
+            <div class="status-icon" aria-hidden="true">
+                <span class="spinner"></span>
 
-      <button id="retryButton" type="button" hidden>
-        Try Again
-      </button>
+                <svg class="icon-success" viewBox="0 0 24 24" fill="none">
+                    <path d="m5 12 4.5 4.5L19 7"
+                          stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
 
-      <a id="loginLink" href="/login/" hidden>
-        Return to Login
-      </a>
-    </section>
-  </main>
+                <svg class="icon-error" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v5M12 16.5v.01"
+                          stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round"/>
+                    <path d="M10.3 4.6 3.4 17a2 2 0 0 0 1.7 3h13.8a2 2 0 0 0 1.7-3L13.7 4.6a2 2 0 0 0-3.4 0Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                </svg>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/logout/script.js"></script>
+            <h1 id="logoutTitle">Signing you out...</h1>
+
+            <p id="logoutMessage" role="status" aria-live="polite">
+                Please wait while we end your session.
+            </p>
+
+            <div class="logout-actions">
+                <button id="retryButton" class="primary-button" type="button" hidden>
+                    Try Again
+                </button>
+
+                <a id="loginLink" class="secondary-link" href="/login/" hidden>
+                    Return to Login
+                </a>
+            </div>
+        </section>
+
+        <p class="logout-footer">
+            Equipment Borrowing and Returning Management System
+        </p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/logout/script.js"></script>
 </body>
-</html>
+  </html>
