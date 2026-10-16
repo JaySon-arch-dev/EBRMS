@@ -1,43 +1,290 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard | EBRMS</title>
-  <link rel="stylesheet" href="/student/style.css">
-  <style>
-    body {
-      visibility: hidden;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8ff">
+    <meta name="robots" content="noindex">
+
+    <title>Menu | EBRMS</title>
+
+    <link rel="stylesheet" href="/shared-view/style.css">
 </head>
-<body>
-  
-<header>
-  <h1>EBRMS</h1>
-  <p>Student Dashboard</p>
-  <a href="/logout/" class="sign-out-button">Sign Out</a>
-</header>
+<body data-role="Student" data-page="dashboard">
 
-  <main>
-    <section>
-      <h2>Welcome, Student</h2>
-      <p>You are viewing the Student Dashboard.</p>
-    </section>
+    <!-- Top bar -->
+    <header class="topbar">
+        <button type="button" class="menu-toggle" id="menuToggle"
+                aria-label="Open menu" aria-controls="menuPanel"
+                aria-expanded="false">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+        </button>
 
-    <section>
-      <h2>Equipment Borrowing</h2>
-      <p>Equipment borrowing features will appear here.</p>
-    </section>
+        <a class="brand-logo" href="/student/" aria-label="EBRMS menu">
+            <span class="brand-logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>EBRMS<span class="brand-period">.</span></span>
+        </a>
 
-    <section>
-      <h2>Borrowing History</h2>
-      <p>Your borrowing transactions will appear here.</p>
-    </section>
-  </main>
+        <span class="topbar-spacer"></span>
+        <span class="role-badge">Student</span>
+    </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/student/script.js"></script>
+    <div class="menu-scrim" id="menuScrim"></div>
+
+    <div class="layout">
+
+        <!-- Menu box: always visible on desktop, expands on mobile -->
+        <aside class="menu-panel" id="menuPanel" aria-label="Student menu">
+
+            <div class="menu-head">
+                <button type="button" class="back-button" id="menuBack">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+                <span class="menu-title">NAVIGATION</span>
+            </div>
+
+            <div class="user-chip">
+                <span class="avatar" aria-hidden="true">S</span>
+                <div class="user-chip-copy">
+                    <strong>Student</strong>
+                    <span>Signed in</span>
+                </div>
+            </div>
+
+            <p class="menu-label">MENU</p>
+
+            <nav class="menu-nav" aria-label="Student pages">
+                <a class="menu-link" href="/student/" data-nav="dashboard" aria-current="page">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="3.5" y="3.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="13.5" y="3.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="3.5" y="13.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="13.5" y="13.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                    </svg>
+                    Menu
+                </a>
+
+                <a class="menu-link" href="/student/transactions/" data-nav="transactions">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M8 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <rect x="8" y="3" width="8" height="5" rx="1.5"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <path d="m8 14 2.5 2.5L16 11"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    My Borrowing Transaction
+                </a>
+
+                <a class="menu-link" href="/student/history/" data-nav="history">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8.5"
+                                stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M12 7.5V12l3 2"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    History
+                </a>
+
+                <a class="menu-link" href="/student/profile/" data-nav="profile">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"
+                                stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M4.5 20a7.5 7.5 0 0 1 15 0"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                    </svg>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="menu-foot">
+                <a class="signout-button" href="/logout/">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round"/>
+                        <path d="M15 8l4 4-4 4M19 12H9"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Equipment -->
+        <main class="content">
+            <div class="page-head">
+                <!-- Shown automatically on pages other than the dashboard -->
+                <button type="button" class="back-button" data-back hidden>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+
+                <div>
+                    <h1>Equipment</h1>
+                    <p>See what you can borrow today.</p>
+                </div>
+            </div>
+
+            <section class="equipment-panel" aria-label="Equipment list">
+                <div class="equipment-head" role="group" aria-label="Filter equipment">
+                    <button type="button" class="chip" data-filter="all" aria-pressed="true">
+                        All <span class="chip-count" data-count="all">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="available" aria-pressed="false">
+                        Available <span class="chip-count" data-count="available">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="unavailable" aria-pressed="false">
+                        Not available <span class="chip-count" data-count="unavailable">0</span>
+                    </button>
+                </div>
+
+                <div class="equipment-scroll" tabindex="0" aria-label="Scrollable equipment list">
+                    <!-- SAMPLE ROWS (visual placeholder only). Replace with real equipment later.
+                         Each row needs data-status="available" or "unavailable". -->
+                    <ul class="item-list" id="equipmentList">
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Projector</span>
+                                <span class="item-meta">Audio-Visual</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Laptop</span>
+                                <span class="item-meta">Computers</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="unavailable">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">HDMI Cable</span>
+                                <span class="item-meta">Accessories</span>
+                            </div>
+                            <span class="badge is-danger">Not available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Extension Cord</span>
+                                <span class="item-meta">Accessories</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Wireless Mouse</span>
+                                <span class="item-meta">Computers</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="unavailable">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Portable Speaker</span>
+                                <span class="item-meta">Audio-Visual</span>
+                            </div>
+                            <span class="badge is-danger">Not available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Camera Tripod</span>
+                                <span class="item-meta">Photography</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Microphone</span>
+                                <span class="item-meta">Audio-Visual</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="unavailable">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Document Camera</span>
+                                <span class="item-meta">Audio-Visual</span>
+                            </div>
+                            <span class="badge is-danger">Not available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Whiteboard Marker Set</span>
+                                <span class="item-meta">Supplies</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="available">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Laser Pointer</span>
+                                <span class="item-meta">Accessories</span>
+                            </div>
+                            <span class="badge is-success">Available</span>
+                        </li>
+                        <li class="item-row" data-status="unavailable">
+                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                            <div class="item-copy">
+                                <span class="item-title">Webcam</span>
+                                <span class="item-meta">Computers</span>
+                            </div>
+                            <span class="badge is-danger">Not available</span>
+                        </li>
+                    </ul>
+
+                    <p class="list-empty" id="equipmentEmpty" hidden>
+                        No equipment in this list.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/shared-view/view.js"></script>
 </body>
-</html>
+                      </html>
