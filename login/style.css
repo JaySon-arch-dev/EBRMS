@@ -358,4 +358,1315 @@ svg {
     border: 1px solid rgba(92, 119, 225, 0.15);
     border-radius: 50%;
 
-    transform: translate(-50
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.orbit-one {
+    width: 245px;
+    height: 245px;
+
+    animation: orbit-spin 32s linear infinite;
+}
+
+.orbit-two {
+    width: 320px;
+    height: 320px;
+
+    border-style: dashed;
+    border-color: rgba(92, 119, 225, 0.13);
+
+    animation: orbit-spin 45s linear infinite reverse;
+}
+
+.illustration-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: grid;
+    place-items: center;
+
+    width: 150px;
+    height: 150px;
+
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffffff,
+            #e6edff 75%
+        );
+
+    box-shadow:
+        0 20px 55px rgba(66, 99, 235, 0.12),
+        inset 0 0 25px rgba(255, 255, 255, 0.8);
+
+    transform: translate(-50%, -50%);
+    animation: center-float 5s ease-in-out infinite;
+}
+
+.center-ring {
+    position: absolute;
+    inset: 12px;
+
+    border: 1px solid rgba(88, 116, 226, 0.16);
+    border-radius: 50%;
+}
+
+.center-icon {
+    width: 72px;
+    height: 72px;
+
+    padding: 5px;
+
+    color: #526ee8;
+}
+
+.floating-card {
+    position: absolute;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 14px 32px rgba(47, 67, 132, 0.1),
+        0 2px 5px rgba(47, 67, 132, 0.04);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    transition:
+        box-shadow var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+.floating-card:hover {
+    border-color: rgba(93, 120, 234, 0.3);
+
+    box-shadow:
+        0 19px 36px rgba(47, 67, 132, 0.15),
+        0 2px 5px rgba(47, 67, 132, 0.04);
+}
+
+.equipment-card {
+    top: 9%;
+    left: 1%;
+
+    animation: card-float 5.5s ease-in-out infinite;
+}
+
+.transaction-card {
+    right: 0;
+    bottom: 13%;
+
+    animation: card-float 6s ease-in-out infinite 0.7s;
+}
+
+.organized-card {
+    top: 10%;
+    right: 3%;
+
+    gap: 10px;
+    padding: 12px 14px;
+
+    animation: card-float 5.8s ease-in-out infinite 1.2s;
+}
+
+.floating-card-icon {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+
+    border-radius: 11px;
+}
+
+.equipment-icon {
+    color: #4d68dc;
+    background: #edf1ff;
+}
+
+.transaction-icon {
+    color: #159a7b;
+    background: #e6f8f1;
+}
+
+.floating-card-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    min-width: 0;
+}
+
+.floating-card-copy strong {
+    color: var(--text-primary);
+
+    font-size: 11px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.floating-label {
+    color: var(--text-muted);
+
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.card-arrow {
+    width: 17px;
+    height: 17px;
+
+    margin-left: 4px;
+
+    color: #8a96b3;
+}
+
+.organized-check {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 31px;
+    height: 31px;
+    padding: 7px;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+    background: linear-gradient(145deg, #38c69a, #1ca67b);
+}
+
+
+/* ---------- 6. Brand footer ---------- */
+
+.brand-footer {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(112, 132, 190, 0.13);
+
+    color: #8490a9;
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.footer-dot {
+    width: 6px;
+    height: 6px;
+
+    background: #8e9ff1;
+}
+
+
+/* ---------- 7. Login panel ---------- */
+
+.form-panel {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-width: 0;
+    min-height: 100%;
+
+    padding: 36px clamp(28px, 5vw, 74px) 25px;
+
+    background: var(--panel-bg);
+}
+
+.form-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.form-top-label {
+    color: #8791a7;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+
+.secure-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #8390a5;
+
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.secure-label svg {
+    width: 16px;
+    height: 16px;
+
+    color: var(--success);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 390px;
+
+    margin: auto;
+    padding: 44px 0;
+    animation: content-enter 650ms ease 100ms both;
+}
+
+
+/* ---------- 8. Login heading ---------- */
+
+.login-heading {
+    margin-bottom: 34px;
+}
+
+.login-symbol {
+    display: grid;
+    place-items: center;
+
+    width: 49px;
+    height: 49px;
+
+    margin-bottom: 23px;
+    padding: 12px;
+
+    border: 1px solid #e0e7ff;
+    border-radius: 15px;
+
+    color: var(--brand-primary);
+    background: linear-gradient(145deg, #f5f7ff, #eaf0ff);
+
+    box-shadow: 0 5px 13px rgba(66, 99, 235, 0.06);
+}
+
+.login-heading h2 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: clamp(23px, 2.1vw, 29px);
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.9px;
+}
+
+.login-heading p {
+    margin: 10px 0 0;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* ---------- 9. Form controls ---------- */
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group label {
+    color: #39445c;
+
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.input-wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
+    height: 54px;
+
+    border: 1px solid #e2e7f1;
+    border-radius: 12px;
+
+    background: var(--input-bg);
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.input-wrapper:hover {
+    border-color: #cbd4ec;
+}
+
+.input-wrapper:focus-within {
+    border-color: #7790ff;
+
+    background: #ffffff;
+
+    box-shadow: 0 0 0 4px rgba(91, 119, 244, 0.1);
+}
+
+.input-icon {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 21px;
+    height: 21px;
+
+    margin-left: 16px;
+
+    color: #96a0b5;
+
+    transition: color var(--transition-fast);
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--brand-primary);
+}
+
+.input-wrapper input {
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+
+    padding: 0 13px;
+
+    border: 0;
+    outline: none;
+
+    color: var(--text-primary);
+    background: transparent;
+
+    font-size: 12px;
+    font-weight: 550;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.input-wrapper input::placeholder {
+    color: #a5aec0;
+    font-weight: 400;
+}
+
+.input-wrapper input:focus-visible {
+    outline: none;
+}
+
+.password-toggle {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 43px;
+    height: 43px;
+
+    margin-right: 5px;
+    padding: 12px;
+
+    border: 0;
+    border-radius: 9px;
+
+    color: #929cb1;
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.password-toggle:hover {
+    color: var(--brand-primary);
+    background: #edf1ff;
+}
+
+.password-toggle:active {
+    transform: scale(0.93);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+}
+
+.password-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+
+/* ---------- 10. Message and validation area ---------- */
+
+.message {
+    display: none;
+
+    padding: 12px 14px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    overflow-wrap: anywhere;
+}
+
+.message:not(:empty) {
+    display: block;
+    animation: message-enter 220ms ease both;
+}
+
+/*
+   Optional status classes.
+   Your JavaScript may use these classes to distinguish
+   successful messages from errors.
+*/
+
+.message.success {
+    color: #167653;
+    border-color: #c7f0df;
+    background: #effbf6;
+}
+
+.message.error {
+    color: #b8324c;
+    border-color: #f4d0d8;
+    background: #fff3f5;
+}
+
+.message.warning {
+    color: #8a6117;
+    border-color: #f0dfb8;
+    background: #fff9e9;
+}
+
+
+/* ---------- 11. Login button ---------- */
+
+.login-button {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 54px;
+
+    padding: 14px 20px;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    color: #ffffff;
+    background: linear-gradient(
+        110deg,
+        #4f6ff1 0%,
+        #4263eb 55%,
+        #3857d8 100%
+    );
+
+    box-shadow: var(--shadow-button);
+
+    font-size: 13px;
+    font-weight: 750;
+    letter-spacing: 0.1px;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal),
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+.login-button::before {
+    position: absolute;
+    top: 0;
+    left: -110%;
+
+    width: 65%;
+    height: 100%;
+
+    background: linear-gradient(
+        100deg,
+        transparent,
+        rgba(255, 255, 255, 0.19),
+        transparent
+    );
+
+    content: "";
+    transform: skewX(-20deg);
+
+    transition: left 550ms ease;
+    pointer-events: none;
+}
+
+.login-button:hover {
+    background: linear-gradient(
+        110deg,
+        #4565e9 0%,
+        #3655d6 100%
+    );
+
+    box-shadow: 0 12px 25px rgba(66, 99, 235, 0.3);
+}
+
+.login-button:hover::before {
+    left: 140%;
+}
+
+.login-button:active {
+    transform: translateY(1px) scale(0.995);
+    box-shadow: 0 5px 12px rgba(66, 99, 235, 0.2);
+}
+
+.login-button:focus-visible {
+    outline: 3px solid rgba(66, 99, 235, 0.3);
+    outline-offset: 4px;
+}
+
+.login-button:disabled {
+    opacity: 0.7;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.button-arrow {
+    position: relative;
+    z-index: 1;
+
+    width: 18px;
+    height: 18px;
+
+    transition: transform var(--transition-fast);
+}
+
+.login-button:hover .button-arrow {
+    transform: translateX(3px);
+}
+
+
+/* ---------- 12. Divider and supporting text ---------- */
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin: 30px 0 17px;
+}
+
+.login-divider > span:first-child,
+.login-divider > span:last-child {
+    flex: 1;
+
+    height: 1px;
+
+    background: #edf0f6;
+}
+
+.divider-text {
+    color: #a0a8b9;
+
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    white-space: nowrap;
+}
+
+.access-note {
+    max-width: 300px;
+
+    margin: 0 auto;
+
+    color: #8b95aa;
+
+    font-size: 11px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+
+/* ---------- 13. Form footer ---------- */
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #f0f2f7;
+
+    color: #9ba4b6;
+
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.form-footer > span:first-child {
+    color: #59657d;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+.footer-separator {
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+    background: #c0c7d5;
+}
+
+
+/* ---------- 14. Keyboard accessibility ---------- */
+
+a:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 4px;
+    border-radius: 5px;
+}
+
+
+/* ---------- 15. Animations ---------- */
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes content-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes message-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes glow-pulse {
+    0%,
+    100% {
+        opacity: 0.65;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.08);
+    }
+}
+
+@keyframes orbit-spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes center-float {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) translateY(-7px);
+    }
+}
+
+@keyframes card-float {
+    0%,
+    100% {
+        translate: 0 0;
+    }
+
+    50% {
+        translate: 0 -7px;
+    }
+}
+
+
+/* ---------- 16. Large desktop ---------- */
+
+@media (min-width: 1441px) {
+    .login-page {
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+        min-height: calc(100vh - 48px);
+        min-height: calc(100svh - 48px);
+
+        border-radius: var(--radius-xl);
+
+        box-shadow: var(--shadow-card);
+    }
+
+    .brand-panel {
+        border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+    }
+
+    .form-panel {
+        border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+    }
+}
+
+
+/* ---------- 17. Tablet and smaller desktop ---------- */
+
+@media (max-width: 1050px) {
+    .login-page {
+        grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1fr);
+    }
+
+    .brand-panel {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+
+    .form-panel {
+        padding-right: 34px;
+        padding-left: 34px;
+    }
+
+    .brand-status {
+        font-size: 10px;
+    }
+
+    .organized-card {
+        right: 0;
+    }
+
+    .equipment-card {
+        left: 0;
+    }
+
+    .transaction-card {
+        right: 0;
+    }
+
+    .orbit-two {
+        width: 280px;
+        height: 280px;
+    }
+}
+
+
+/* ---------- 18. Mobile layout ---------- */
+
+@media (max-width: 760px) {
+    body {
+        background: #ffffff;
+    }
+
+    .login-page {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100svh;
+
+        overflow: visible;
+    }
+
+    .brand-panel {
+        flex: 0 0 auto;
+
+        min-height: auto;
+
+        padding: 23px 25px 20px;
+
+        border-radius: 0 0 24px 24px;
+    }
+
+    .brand-top {
+        gap: 12px;
+    }
+
+    .brand-logo {
+        gap: 8px;
+        font-size: 20px;
+    }
+
+    .brand-logo-mark {
+        width: 34px;
+        height: 34px;
+        padding: 7px;
+
+        border-radius: 10px;
+    }
+
+    .brand-status {
+        padding: 7px 9px;
+        font-size: 9px;
+    }
+
+    .brand-content {
+        padding-top: 34px;
+        padding-bottom: 0;
+    }
+
+    .eyebrow {
+        margin-bottom: 14px;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+
+    .brand-content h1 {
+        font-size: clamp(33px, 7vw, 43px);
+        letter-spacing: -1.7px;
+    }
+
+    .brand-description {
+        max-width: 430px;
+
+        margin-top: 12px;
+
+        font-size: 12px;
+        line-height: 1.75;
+    }
+
+    .illustration {
+        height: 205px;
+        max-width: 390px;
+
+        margin-top: 13px;
+    }
+
+    .illustration-center {
+        width: 108px;
+        height: 108px;
+    }
+
+    .center-icon {
+        width: 56px;
+        height: 56px;
+    }
+
+    .orbit-one {
+        width: 175px;
+        height: 175px;
+    }
+
+    .orbit-two {
+        width: 220px;
+        height: 220px;
+    }
+
+    .illustration-glow {
+        width: 180px;
+        height: 160px;
+    }
+
+    .floating-card {
+        gap: 8px;
+        padding: 9px 10px;
+        border-radius: 11px;
+    }
+
+    .floating-card-icon {
+        width: 31px;
+        height: 31px;
+        padding: 7px;
+
+        border-radius: 8px;
+    }
+
+    .floating-card-copy {
+        gap: 3px;
+    }
+
+    .floating-card-copy strong {
+        font-size: 9px;
+    }
+
+    .floating-label {
+        font-size: 8px;
+    }
+
+    .equipment-card {
+        top: 7%;
+        left: 0;
+    }
+
+    .transaction-card {
+        right: 0;
+        bottom: 8%;
+    }
+
+    .organized-card {
+        top: 4%;
+        right: 0;
+
+        padding: 8px 9px;
+    }
+
+    .organized-check {
+        width: 24px;
+        height: 24px;
+        padding: 5px;
+    }
+
+    .card-arrow {
+        display: none;
+    }
+
+    .brand-footer {
+        margin-top: 8px;
+        padding-top: 14px;
+
+        font-size: 9px;
+    }
+
+    .form-panel {
+        flex: 1 0 auto;
+
+        min-height: auto;
+
+        padding: 24px 25px 20px;
+    }
+
+    .form-top-label {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+    }
+
+    .secure-label {
+        font-size: 10px;
+    }
+
+    .login-container {
+        max-width: 430px;
+
+        margin: 0 auto;
+        padding: 35px 0 32px;
+    }
+
+    .login-heading {
+        margin-bottom: 28px;
+    }
+
+    .login-symbol {
+        width: 44px;
+        height: 44px;
+
+        margin-bottom: 18px;
+        padding: 11px;
+
+        border-radius: 13px;
+    }
+
+    .login-heading h2 {
+        font-size: 25px;
+    }
+
+    .login-heading p {
+        font-size: 12px;
+    }
+
+    #loginForm {
+        gap: 21px;
+    }
+
+    .input-wrapper {
+        height: 53px;
+    }
+
+    .login-button {
+        min-height: 53px;
+    }
+
+    .login-divider {
+        margin-top: 25px;
+    }
+
+    .form-footer {
+        padding-top: 16px;
+    }
+}
+
+
+/* ---------- 19. Small phones ---------- */
+
+@media (max-width: 380px) {
+    .brand-panel {
+        padding: 19px 18px 17px;
+    }
+
+    .brand-logo {
+        font-size: 18px;
+    }
+
+    .brand-logo-mark {
+        width: 31px;
+        height: 31px;
+    }
+
+    .brand-status {
+        gap: 6px;
+        padding: 6px 8px;
+
+        font-size: 8px;
+    }
+
+    .brand-content {
+        padding-top: 27px;
+    }
+
+    .brand-content h1 {
+        font-size: 32px;
+    }
+
+    .brand-description {
+        font-size: 11px;
+    }
+
+    .illustration {
+        height: 175px;
+    }
+
+    .illustration-center {
+        width: 94px;
+        height: 94px;
+    }
+
+    .center-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .orbit-one {
+        width: 150px;
+        height: 150px;
+    }
+
+    .orbit-two {
+        width: 190px;
+        height: 190px;
+    }
+
+    .floating-card {
+        gap: 6px;
+        padding: 7px 8px;
+    }
+
+    .floating-card-copy strong {
+        font-size: 8px;
+    }
+
+    .floating-label {
+        font-size: 7px;
+    }
+
+    .floating-card-icon {
+        width: 26px;
+        height: 26px;
+        padding: 6px;
+    }
+
+    .organized-check {
+        width: 21px;
+        height: 21px;
+    }
+
+    .form-panel {
+        padding-right: 19px;
+        padding-left: 19px;
+    }
+
+    .login-container {
+        padding-top: 29px;
+    }
+
+    .login-heading h2 {
+        font-size: 22px;
+    }
+
+    .form-footer {
+        gap: 7px;
+        font-size: 9px;
+    }
+}
+
+
+/* ---------- 20. Short screens in landscape ---------- */
+
+@media (max-height: 650px) and (min-width: 761px) {
+    .brand-panel,
+    .form-panel {
+        padding-top: 22px;
+        padding-bottom: 18px;
+    }
+
+    .brand-content {
+        padding-top: 20px;
+        padding-bottom: 15px;
+    }
+
+    .brand-content h1 {
+        font-size: clamp(34px, 3.2vw, 45px);
+    }
+
+    .brand-description {
+        margin-top: 12px;
+        font-size: 12px;
+    }
+
+    .illustration {
+        height: 220px;
+        margin-top: 10px;
+    }
+
+    .illustration-center {
+        width: 120px;
+        height: 120px;
+    }
+
+    .orbit-one {
+        width: 200px;
+        height: 200px;
+    }
+
+    .orbit-two {
+        width: 250px;
+        height: 250px;
+    }
+
+    .login-container {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .login-heading {
+        margin-bottom: 22px;
+    }
+
+    .login-symbol {
+        width: 40px;
+        height: 40px;
+
+        margin-bottom: 13px;
+        padding: 10px;
+    }
+
+    #loginForm {
+        gap: 17px;
+    }
+
+    .input-wrapper {
+        height: 48px;
+    }
+
+    .login-button {
+        min-height: 48px;
+    }
+
+    .login-divider {
+        margin-top: 20px;
+    }
+}
+
+
+/* ---------- 21. Reduced motion accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .floating-card,
+    .illustration-center,
+    .orbit,
+    .illustration-glow {
+        animation: none !important;
+    }
+   }
