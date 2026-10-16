@@ -1,76 +1,432 @@
+/* =========================================================
+   EBRMS LOGOUT
+   File: logout/style.css
+   Uses the same tokens as login/style.css
+   ========================================================= */
+
+:root {
+    color-scheme: light;
+
+    --page-bg: #f5f8ff;
+    --panel-bg: #ffffff;
+    --brand-primary: #4263eb;
+    --brand-primary-dark: #304fd0;
+    --brand-primary-light: #edf1ff;
+
+    --text-primary: #1b2540;
+    --text-secondary: #68748d;
+    --text-muted: #929bb0;
+
+    --border-color: #e6eaf3;
+
+    --success: #20a779;
+    --danger: #dc4c64;
+
+    --shadow-card:
+        0 20px 55px rgba(39, 61, 120, 0.09),
+        0 3px 10px rgba(39, 61, 120, 0.04);
+    --shadow-button: 0 6px 14px rgba(66, 99, 235, 0.2);
+
+    --radius-sm: 10px;
+    --radius-md: 15px;
+    --radius-lg: 22px;
+
+    --transition-fast: 160ms ease;
+    --transition-normal: 240ms ease;
+}
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  font-family: Arial, sans-serif;
-  background: #f5f2eb;
-  color: #302d28;
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    min-width: 320px;
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0;
+    padding: 24px;
+
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 12% 12%,
+            rgba(178, 199, 255, 0.36),
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 90% 90%,
+            rgba(209, 220, 255, 0.62),
+            transparent 45%
+        ),
+        linear-gradient(145deg, #f7f9ff 0%, #eef3ff 100%);
+    color: var(--text-primary);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.logout-container {
-  width: 100%;
-  max-width: 420px;
-  text-align: center;
+/* Soft decorative rings, same as the login brand panel */
+body::before,
+body::after {
+    position: fixed;
+
+    border: 1px solid rgba(96, 123, 230, 0.12);
+    border-radius: 50%;
+
+    content: "";
+    pointer-events: none;
 }
 
-.logout-container > h1 {
-  margin-bottom: 24px;
-  letter-spacing: 1px;
+body::before {
+    top: -150px;
+    right: -170px;
+
+    width: 360px;
+    height: 360px;
 }
 
-.logout-card {
-  padding: 28px 22px;
-  background: #ffffff;
-  border: 1px solid #e4dfd5;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-}
+body::after {
+    bottom: 6%;
+    left: -160px;
 
-.logout-card h2 {
-  margin-top: 0;
-  font-size: 22px;
-}
-
-.logout-card p {
-  line-height: 1.6;
-  color: #625d54;
-}
-
-button,
-.logout-card a {
-  display: inline-block;
-  margin: 12px 6px 0;
-  padding: 11px 18px;
-  border: none;
-  border-radius: 6px;
-  font: inherit;
-  text-decoration: none;
-  cursor: pointer;
+    width: 300px;
+    height: 300px;
 }
 
 button {
-  background: #514735;
-  color: #ffffff;
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.logout-card a {
-  color: #514735;
-  border: 1px solid #d8d0c3;
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
+svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+::selection {
+    color: var(--text-primary);
+    background: #dce4ff;
 }
 
 [hidden] {
-  display: none !important;
+    display: none !important;
+}
+
+
+/* ---------- Layout ---------- */
+
+.logout-page {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 420px;
+
+    animation: page-enter 450ms ease both;
+}
+
+
+/* ---------- Brand ---------- */
+
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 26px;
+
+    color: var(--text-primary);
+
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.brand-logo-mark {
+    display: grid;
+    place-items: center;
+
+    width: 39px;
+    height: 39px;
+    padding: 8px;
+
+    color: #ffffff;
+    background: linear-gradient(145deg, #6280ff, #3d5be0);
+
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(66, 99, 235, 0.2);
+}
+
+.brand-period {
+    color: var(--brand-primary);
+}
+
+
+/* ---------- Card ---------- */
+
+.logout-card {
+    width: 100%;
+    padding: 38px 34px 34px;
+
+    text-align: center;
+
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.status-icon {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 22px;
+
+    border-radius: var(--radius-md);
+
+    color: var(--brand-primary);
+    background: var(--brand-primary-light);
+
+    transition:
+        color var(--transition-normal),
+        background var(--transition-normal);
+}
+
+.status-icon > * {
+    display: none;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+
+    border: 2.5px solid rgba(66, 99, 235, 0.2);
+    border-top-color: var(--brand-primary);
+    border-radius: 50%;
+
+    animation: spin 800ms linear infinite;
+}
+
+.icon-success,
+.icon-error {
+    width: 26px;
+    height: 26px;
+}
+
+.logout-card[data-state="loading"] .spinner,
+.logout-card[data-state="success"] .icon-success,
+.logout-card[data-state="error"] .icon-error {
+    display: block;
+}
+
+.logout-card[data-state="success"] .status-icon {
+    color: var(--success);
+    background: #e6f8f1;
+}
+
+.logout-card[data-state="error"] .status-icon {
+    color: var(--danger);
+    background: #fdecef;
+}
+
+.logout-card h1 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.7px;
+}
+
+.logout-card p {
+    margin: 12px 0 0;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    line-height: 1.75;
+    text-wrap: balance;
+}
+
+
+/* ---------- Actions ---------- */
+
+.logout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.logout-actions:has(> :not([hidden])) {
+    margin-top: 26px;
+}
+
+.primary-button,
+.secondary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 50px;
+    padding: 0 20px;
+
+    border-radius: var(--radius-md);
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-normal),
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.primary-button {
+    border: 0;
+
+    color: #ffffff;
+    background: linear-gradient(135deg, #4d6cf5, #3a56dc);
+    box-shadow: var(--shadow-button);
+}
+
+.primary-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(66, 99, 235, 0.26);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(66, 99, 235, 0.2);
+}
+
+.primary-button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+    box-shadow: none;
+}
+
+.secondary-link {
+    color: var(--brand-primary);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+}
+
+.secondary-link:hover {
+    background: var(--brand-primary-light);
+    border-color: #cfd9ff;
+}
+
+.primary-button:focus-visible,
+.secondary-link:focus-visible,
+.brand-logo:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 3px;
+}
+
+
+/* ---------- Footer note ---------- */
+
+.logout-footer {
+    margin: 22px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+    text-wrap: balance;
+}
+
+
+/* ---------- Animations ---------- */
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 420px) {
+    body {
+        padding: 18px;
+    }
+
+    .logout-card {
+        padding: 30px 22px 26px;
+    }
+
+    .logout-card h1 {
+        font-size: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .spinner {
+        animation-duration: 2s !important;
+        animation-iteration-count: infinite !important;
+    }
 }
