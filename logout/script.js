@@ -1,9 +1,8 @@
-
 const SUPABASE_URL =
   "https://lrlzlzfulcajbuqeufym.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_zVdMyZmwz8nOo4YHqY9pg_JSoMivtn";
+  "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
@@ -17,12 +16,21 @@ const supabaseClient = window.supabase.createClient(
   }
 );
 
+const logoutCard = document.getElementById("logoutCard");
 const logoutTitle = document.getElementById("logoutTitle");
 const logoutMessage = document.getElementById("logoutMessage");
 const retryButton = document.getElementById("retryButton");
 const loginLink = document.getElementById("loginLink");
 
 let isSigningOut = false;
+
+// The card's data-state ("loading", "success" or "error")
+// controls which status icon the CSS shows.
+function setState(state, title, message) {
+  logoutCard.dataset.state = state;
+  logoutTitle.textContent = title;
+  logoutMessage.textContent = message;
+}
 
 async function signOutUser() {
   if (isSigningOut) return;
@@ -32,9 +40,11 @@ async function signOutUser() {
   loginLink.hidden = true;
   retryButton.disabled = true;
 
-  logoutTitle.textContent = "Signing you out...";
-  logoutMessage.textContent =
-    "Please wait while we end your session.";
+  setState(
+    "loading",
+    "Signing you out...",
+    "Please wait while we end your session."
+  );
 
   try {
     const { error } = await supabaseClient.auth.signOut();
@@ -43,9 +53,11 @@ async function signOutUser() {
       throw error;
     }
 
-    logoutTitle.textContent = "Signed out successfully";
-    logoutMessage.textContent =
-      "Your session has ended. Returning to login...";
+    setState(
+      "success",
+      "Signed out successfully",
+      "Your session has ended. Returning to login..."
+    );
 
     // Replace this page so the Back button doesn't return
     // to the logout screen as an active dashboard.
@@ -53,9 +65,11 @@ async function signOutUser() {
   } catch (error) {
     console.error("Sign-out failed:", error);
 
-    logoutTitle.textContent = "Unable to sign out";
-    logoutMessage.textContent =
-      "We couldn't confirm that your session ended. Please try again.";
+    setState(
+      "error",
+      "Unable to sign out",
+      "We couldn't confirm that your session ended. Please try again."
+    );
 
     retryButton.hidden = false;
     loginLink.hidden = false;
