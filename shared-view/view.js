@@ -1,9 +1,10 @@
 /* =========================================================
    EBRMS — SHARED DASHBOARD VIEW
    File: shared-view/view.js
-   - Mobile slide-in menu (open, close, focus handling)
+   - Expanding menu on mobile (three-line button)
+   - Back navigation
+   - Equipment filter (All / Available / Not available)
    - Highlights the current page in the menu
-   - Shows today's date
    - Sends visitors without a session back to /login/
    ========================================================= */
 
@@ -14,58 +15,61 @@
   const SUPABASE_KEY =
     "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
+  const HOME_URL = "/student/";
   const MOBILE_QUERY = window.matchMedia("(max-width: 899px)");
 
   const body = document.body;
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("sidebarOverlay");
-  const menuToggle = document.getElementById("menuToggle");
-  const sidebarClose = document.getElementById("sidebarClose");
+  const panel = document.getElementById("menuPanel");
+  const scrim = document.getElementById("menuScrim");
+  const toggle = document.getElementById("menuToggle");
+  const menuBack = document.getElementById("menuBack");
 
-  /* ---------- Menu: open and close ---------- */
+  /* ---------- Menu: expand and collapse (mobile) ---------- */
 
   function isOpen() {
-    return sidebar.classList.contains("is-open");
+    return panel.classList.contains("is-open");
   }
 
   function setMenu(open, { restoreFocus = true } = {}) {
-    const wasOpen = isOpen();
-    if (open === wasOpen) return;
+    if (open === isOpen()) return;
 
-    sidebar.classList.toggle("is-open", open);
-    overlay.classList.toggle("is-visible", open);
-    body.classList.toggle("nav-open", open);
-    menuToggle.setAttribute("aria-expanded", String(open));
+    panel.classList.toggle("is-open", open);
+    scrim.classList.toggle("is-visible", open);
+    body.classList.toggle("menu-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
 
     if (open) {
-      sidebarClose.focus();
+      menuBack.focus();
     } else if (restoreFocus) {
-      menuToggle.focus();
+      toggle.focus();
     }
   }
 
-  menuToggle.addEventListener("click", () => setMenu(!isOpen()));
-  sidebarClose.addEventListener("click", () => setMenu(false));
-  overlay.addEventListener("click", () => setMenu(false));
+  toggle.addEventListener("click", () => setMenu(!isOpen()));
+  menuBack.addEventListener("click", () => setMenu(false));
+  scrim.addEventListener("click", () => setMenu(false));
 
-  // Close after choosing a menu item (mobile only).
-  sidebar.querySelectorAll(".nav-link").forEach((link) => {
+  panel.querySelectorAll(".menu-link").forEach((link) => {
     link.addEventListener("click", () => {
       if (MOBILE_QUERY.matches) setMenu(false, { restoreFocus: false });
     });
   });
 
   document.addEventListener("keydown", (event) => {
-    if (!isOpen()) return;
+    if (!isOpen() || !MOBILE_QUERY.matches) return;
 
     if (event.key === "Escape") {
       setMenu(false);
       return;
     }
 
-    // Keep Tab inside the menu while it covers the page.
+    // Keep Tab inside the open menu.
     if (event.key === "Tab") {
-      const focusable = sidebar.querySelectorAll("a[href], button");
+      const focusable = [
+        toggle,
+        ...panel.querySelectorAll("a[href], button")
+      ];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
 
@@ -79,17 +83,38 @@
     }
   });
 
-  // Leaving mobile size resets the menu so desktop is never stuck "open".
+  // Growing to desktop size shows the menu box normally.
   MOBILE_QUERY.addEventListener("change", (event) => {
     if (!event.matches) setMenu(false, { restoreFocus: false });
   });
 
-  /* ---------- Current page in the menu ---------- */
+  /* ---------- Back navigation ---------- */
+  // The page-level Back button appears on every page except the
+  // dashboard. It goes to the previous page, or to the dashboard if
+  // there is no history to go back to.
 
   const currentPage = body.dataset.page;
 
+  document.querySelectorAll("[data-back]").forEach((button) => {
+    button.hidden = currentPage === "dashboard";
+
+    button.addEventListener("click", () => {
+      const cameFromHere =
+        document.referrer &&
+        new URL(document.referrer).origin === window.location.origin;
+
+      if (cameFromHere && window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = HOME_URL;
+      }
+    });
+  });
+
+  /* ---------- Current page in the menu ---------- */
+
   if (currentPage) {
-    sidebar.querySelectorAll(".nav-link").forEach((link) => {
+    panel.querySelectorAll(".menu-link").forEach((link) => {
       if (link.dataset.nav === currentPage) {
         link.setAttribute("aria-current", "page");
       } else {
@@ -98,15 +123,53 @@
     });
   }
 
-  /* ---------- Today's date ---------- */
+  /* ---------- Equipment filter ---------- */
 
-  document.querySelectorAll("[data-today]").forEach((element) => {
-    element.textContent = new Date().toLocaleDateString(undefined, {
-      weekday: "long",
-      month: "long",
-      day: "numeric"
+  const list = document.getElementById("equipmentList");
+  const emptyMessage = document.getElementById("equipmentEmpty");
+  const chips = document.querySelectorAll(".chip[data-filter]");
+
+  if (list && chips.length) {
+    const rows = Array.from(list.querySelectorAll(".item-row"));
+
+    function updateCounts() {
+      const counts = {
+        all: rows.length,
+        available: rows.filter((r) => r.dataset.status === "available").length,
+        unavailable: rows.filter((r) => r.dataset.status === "unavailable").length
+      };
+
+      document.querySelectorAll("[data-count]").forEach((element) => {
+        element.textContent = counts[element.dataset.count] ?? 0;
+      });
+    }
+
+    function applyFilter(filter) {
+      let shown = 0;
+
+      rows.forEach((row) => {
+        const visible = filter === "all" || row.dataset.status === filter;
+        row.hidden = !visible;
+        if (visible) shown += 1;
+      });
+
+      emptyMessage.hidden = shown > 0;
+
+      chips.forEach((chip) => {
+        chip.setAttribute("aria-pressed", String(chip.dataset.filter === filter));
+      });
+
+      // Start from the top whenever the list changes.
+      list.parentElement.scrollTop = 0;
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => applyFilter(chip.dataset.filter));
     });
-  });
+
+    updateCounts();
+    applyFilter("all");
+  }
 
   /* ---------- Session check ---------- */
   // Convenience only: real protection must stay on the server / Supabase RLS.
