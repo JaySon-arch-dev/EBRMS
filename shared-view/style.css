@@ -742,6 +742,10 @@ p {
     background: var(--danger-light);
 }
 
+.list-empty .chip {
+    margin-top: 14px;
+}
+
 .list-empty {
     padding: 40px 20px;
 
@@ -1068,4 +1072,4 @@ p {
     *::after {
         transition-duration: 0.01ms !important;
     }
-       }
+   } 
