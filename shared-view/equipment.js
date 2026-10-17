@@ -8,10 +8,13 @@
    ========================================================= */
 
 (() => {
-  // Change these to match your equipment table.
+  // While setting up, show the database's own error message on the page
+  // when loading fails. Set to false once everything works.
+  const SHOW_ERROR_DETAILS = true;
+
+  // Change these to match your equipment table (public.equipment).
   const EQUIPMENT_SOURCE = {
     table: "equipment",
-    orderColumn: "name",
 
     // Turns one database record into one row on the page.
     // status must be "available" or "unavailable".
@@ -41,6 +44,12 @@
   const scroller = list.parentElement;
   const message = document.getElementById("equipmentEmptyText");
   const retryButton = document.getElementById("equipmentRetry");
+
+  // Small line under the message that shows the technical reason.
+  const detail = document.createElement("p");
+  detail.className = "item-meta";
+  detail.hidden = true;
+  message.after(detail);
 
   // Rows are built with textContent so database text is never run as HTML.
   function buildRow({ title, meta, status }) {
@@ -75,9 +84,11 @@
     return row;
   }
 
-  function showMessage(text, { retry = false } = {}) {
+  function showMessage(text, { retry = false, reason = "" } = {}) {
     message.textContent = text;
     retryButton.hidden = !retry;
+    detail.textContent = reason;
+    detail.hidden = !reason;
   }
 
   async function loadEquipment() {
@@ -96,10 +107,10 @@
       return;
     }
 
+    // No ordering in the query, so a different column name can't break it.
     const { data, error } = await client
       .from(EQUIPMENT_SOURCE.table)
-      .select("*")
-      .order(EQUIPMENT_SOURCE.orderColumn, { ascending: true });
+      .select("*");
 
     scroller.removeAttribute("aria-busy");
 
@@ -107,15 +118,20 @@
       console.error("Could not load equipment:", error.message);
       showMessage(
         "We couldn't load the equipment. Please try again.",
-        { retry: true }
+        { retry: true, reason: SHOW_ERROR_DETAILS ? error.message : "" }
       );
       refreshList();
       return;
     }
 
-    list.replaceChildren(
-      ...data.map((record) => buildRow(EQUIPMENT_SOURCE.toRow(record)))
-    );
+    // Sorted by name here in the page.
+    const rows = data
+      .map((record) => EQUIPMENT_SOURCE.toRow(record))
+      .sort((a, b) =>
+        String(a.title || "").localeCompare(String(b.title || ""))
+      );
+
+    list.replaceChildren(...rows.map(buildRow));
 
     showMessage("No equipment to show.");
     refreshList();
