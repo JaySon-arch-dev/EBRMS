@@ -1,0 +1,99 @@
+/* =========================================================
+   EBRMS — HISTORY (shared by every role)
+   File: shared-view/history/script.js
+
+   Shows only the signed-in user's own records.
+   While HISTORY_SOURCE.table is null, the sample rows in
+   index.html stay visible (UI preview only).
+   ========================================================= */
+
+(() => {
+  // Fill this in when the transactions table is ready.
+  const HISTORY_SOURCE = {
+    table: null,              // e.g. "borrow_transactions"
+    userColumn: "user_id",    // column that holds the owner's auth user id
+    orderColumn: "created_at",
+
+    // Turns one database record into one row. Adjust to your columns.
+    toRow(record) {
+      return {
+        title: record.equipment_name,
+        meta: record.date_text,
+        status: record.status        // "returned" or "overdue"
+      };
+    }
+  };
+
+  const STATUS = {
+    returned: { label: "Returned", tone: "is-success" },
+    overdue: { label: "Overdue", tone: "is-danger" }
+  };
+
+  const ICON =
+    '<svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+
+  const list = document.getElementById("itemList");
+
+  // Rows are built with textContent so database text is never run as HTML.
+  function buildRow({ title, meta, status }) {
+    const info = STATUS[status] || { label: status || "Unknown", tone: "is-neutral" };
+
+    const row = document.createElement("li");
+    row.className = "item-row";
+    row.dataset.status = status || "unknown";
+
+    const icon = document.createElement("span");
+    icon.className = "item-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = ICON;
+
+    const copy = document.createElement("div");
+    copy.className = "item-copy";
+
+    const titleEl = document.createElement("span");
+    titleEl.className = "item-title";
+    titleEl.textContent = title || "Untitled";
+
+    const metaEl = document.createElement("span");
+    metaEl.className = "item-meta";
+    metaEl.textContent = meta || "";
+
+    const badge = document.createElement("span");
+    badge.className = "badge " + info.tone;
+    badge.textContent = info.label;
+
+    copy.append(titleEl, metaEl);
+    row.append(icon, copy, badge);
+    return row;
+  }
+
+  async function loadHistory() {
+    if (!HISTORY_SOURCE.table) return;   // keep the sample rows
+
+    const { client, user: userReady, refreshList } = window.EBRMS;
+    const user = await userReady;
+
+    if (!client || !user) return;
+
+    // The filter below is a convenience. Supabase RLS must be the
+    // rule that really limits each user to their own rows.
+    const { data, error } = await client
+      .from(HISTORY_SOURCE.table)
+      .select("*")
+      .eq(HISTORY_SOURCE.userColumn, user.id)
+      .order(HISTORY_SOURCE.orderColumn, { ascending: false });
+
+    if (error) {
+      console.error("Could not load history:", error.message);
+      return;
+    }
+
+    list.replaceChildren(
+      ...data.map((record) => buildRow(HISTORY_SOURCE.toRow(record)))
+    );
+
+    refreshList();
+  }
+
+  loadHistory();
+})();
