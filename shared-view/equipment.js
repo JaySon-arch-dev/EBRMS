@@ -23,7 +23,7 @@
     // name inside the bucket (for example "images (3).jpeg"). A full
     // https:// link also works. Without a value, a placeholder icon shows.
     photoColumn: "photo_path",
-    photoBucket: "equipment",     // <-- the exact name of your Storage bucket
+    photoBucket: "Photos",     // <-- the exact name of your Storage bucket
 
     // Words (in the status or condition column) that decide the status shown.
     damagedWords: ["damag", "broken"],
