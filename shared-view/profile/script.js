@@ -4,7 +4,7 @@
 
    Shows only the signed-in user's own details.
    Each value comes from, in this order:
-     1. the user's row in PROFILE_SOURCE.table (if you set one)
+     1. the user's row in PROFILE_SOURCE.table (full_name, user_id, ...)
      2. the user's Supabase metadata
      3. their Supabase account (email, created_at)
      4. the role detected by view.js (for "role")
@@ -12,10 +12,13 @@
    ========================================================= */
 
 (() => {
-  // Fill this in when the profile table is ready.
+  // The table that holds full_name and user_id. Change "users" to your
+  // real table name if it is different.
+  // matchColumns: the columns tried, in order, to find the signed-in
+  // user's own row ("id" = the Supabase auth user id).
   const PROFILE_SOURCE = {
-    table: null,       // e.g. "profiles"
-    idColumn: "id"     // column that holds the owner's auth user id
+    table: "users",
+    matchColumns: ["id", "email"]
   };
 
   const DASH = "\u2014";
@@ -46,18 +49,30 @@
     let row = null;
 
     if (PROFILE_SOURCE.table && client) {
-      // The filter is a convenience. Supabase RLS must be the rule
+      // These filters are a convenience. Supabase RLS must be the rule
       // that really limits each user to their own row.
-      const { data, error } = await client
-        .from(PROFILE_SOURCE.table)
-        .select("*")
-        .eq(PROFILE_SOURCE.idColumn, user.id)
-        .maybeSingle();
+      for (const column of PROFILE_SOURCE.matchColumns) {
+        const match = column === "email" ? user.email : user.id;
+        if (!match) continue;
 
-      if (error) {
-        console.error("Could not load profile:", error.message);
-      } else {
-        row = data;
+        const { data, error } = await client
+          .from(PROFILE_SOURCE.table)
+          .select("*")
+          .eq(column, match)
+          .maybeSingle();
+
+        if (error) {
+          console.error(
+            `Profile lookup by "${column}" failed:`,
+            error.message
+          );
+          continue;
+        }
+
+        if (data) {
+          row = data;
+          break;
+        }
       }
     }
 
