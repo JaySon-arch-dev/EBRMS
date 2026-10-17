@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="/shared-view/style.css">
 </head>
-<body data-role="Faculty" data-page="dashboard" data-home="/faculty/">
+<body data-role="Student" data-page="dashboard" data-home="/student/">
 
     <!-- Top bar -->
     <header class="topbar">
@@ -29,7 +29,7 @@
             </svg>
         </button>
 
-        <a class="brand-logo" href="/faculty/" aria-label="EBRMS menu">
+        <a class="brand-logo" href="/student/" aria-label="EBRMS menu">
             <span class="brand-logo-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
                     <rect x="3.5" y="3.5" width="17" height="17" rx="5"
@@ -43,7 +43,7 @@
         </a>
 
         <span class="topbar-spacer"></span>
-        <span class="role-badge">Faculty</span>
+        <span class="role-badge">Student</span>
     </header>
 
     <div class="menu-scrim" id="menuScrim"></div>
@@ -51,7 +51,7 @@
     <div class="layout">
 
         <!-- Menu box: always visible on desktop, expands on mobile -->
-        <aside class="menu-panel" id="menuPanel" aria-label="Faculty menu">
+        <aside class="menu-panel" id="menuPanel" aria-label="Student menu">
 
             <div class="menu-head">
                 <button type="button" class="back-button" id="menuBack">
@@ -66,17 +66,17 @@
             </div>
 
             <div class="user-chip">
-                <span class="avatar" aria-hidden="true">F</span>
+                <span class="avatar" aria-hidden="true">S</span>
                 <div class="user-chip-copy">
-                    <strong>Faculty</strong>
+                    <strong>Student</strong>
                     <span>Signed in</span>
                 </div>
             </div>
 
             <p class="menu-label">MENU</p>
 
-            <nav class="menu-nav" aria-label="Faculty pages">
-                <a class="menu-link" href="/faculty/" data-nav="dashboard" aria-current="page">
+            <nav class="menu-nav" aria-label="Student pages">
+                <a class="menu-link" href="/student/" data-nav="dashboard" aria-current="page">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect x="3.5" y="3.5" width="7" height="7" rx="2"
                               stroke="currentColor" stroke-width="1.7"/>
@@ -299,4 +299,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/shared-view/view.js"></script>
 </body>
-                            </html>
+                            </html> 
