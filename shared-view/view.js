@@ -3,9 +3,11 @@
    File: shared-view/view.js
    - Expanding menu on mobile (three-line button)
    - Back navigation
-   - Equipment filter (All / Available / Not available)
+   - List filters (equipment, history)
    - Highlights the current page in the menu
-   - Sends visitors without a session back to /login/
+   - One shared Supabase client + the signed-in user
+     (window.EBRMS.client, window.EBRMS.user)
+   - Fills in the role name and Home link on shared pages
    ========================================================= */
 
 (() => {
@@ -15,10 +17,16 @@
   const SUPABASE_KEY =
     "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
+  const ROLES = {
+    student: { label: "Student", home: "/student/" },
+    faculty: { label: "Faculty", home: "/faculty/" },
+    admin: { label: "Admin", home: "/admin/" }
+  };
+
+  const STORE_KEY = "ebrms:view";
   const MOBILE_QUERY = window.matchMedia("(max-width: 899px)");
 
   const body = document.body;
-  const HOME_URL = body.dataset.home || "/";
   const panel = document.getElementById("menuPanel");
   const scrim = document.getElementById("menuScrim");
   const toggle = document.getElementById("menuToggle");
@@ -89,9 +97,8 @@
   });
 
   /* ---------- Back navigation ---------- */
-  // The page-level Back button appears on every page except the
-  // dashboard. It goes to the previous page, or to the dashboard if
-  // there is no history to go back to.
+  // Goes to the previous page, or to the user's own dashboard
+  // (data-home on <body>) when there is no history to go back to.
 
   const currentPage = body.dataset.page;
 
@@ -106,7 +113,7 @@
       if (cameFromHere && window.history.length > 1) {
         window.history.back();
       } else {
-        window.location.href = HOME_URL;
+        window.location.href = body.dataset.home || "/";
       }
     });
   });
@@ -123,83 +130,154 @@
     });
   }
 
-  /* ---------- Equipment filter ---------- */
+  /* ---------- List filter (equipment, history) ---------- */
 
-  const list = document.getElementById("equipmentList");
-  const emptyMessage = document.getElementById("equipmentEmpty");
+  const list = document.getElementById("equipmentList") ||
+    document.getElementById("itemList");
+  const emptyMessage = document.getElementById("equipmentEmpty") ||
+    document.getElementById("itemEmpty");
   const chips = document.querySelectorAll(".chip[data-filter]");
 
-  if (list && chips.length) {
+  let currentFilter = "all";
+
+  function refreshList() {
+    if (!list || !chips.length) return;
+
     const rows = Array.from(list.querySelectorAll(".item-row"));
+    let shown = 0;
 
-    function updateCounts() {
-      const counts = {
-        all: rows.length,
-        available: rows.filter((r) => r.dataset.status === "available").length,
-        unavailable: rows.filter((r) => r.dataset.status === "unavailable").length
-      };
+    rows.forEach((row) => {
+      const visible =
+        currentFilter === "all" || row.dataset.status === currentFilter;
+      row.hidden = !visible;
+      if (visible) shown += 1;
+    });
 
-      document.querySelectorAll("[data-count]").forEach((element) => {
-        element.textContent = counts[element.dataset.count] ?? 0;
-      });
-    }
+    document.querySelectorAll("[data-count]").forEach((element) => {
+      const key = element.dataset.count;
+      element.textContent =
+        key === "all"
+          ? rows.length
+          : rows.filter((row) => row.dataset.status === key).length;
+    });
 
-    function applyFilter(filter) {
-      let shown = 0;
+    chips.forEach((chip) => {
+      chip.setAttribute(
+        "aria-pressed",
+        String(chip.dataset.filter === currentFilter)
+      );
+    });
 
-      rows.forEach((row) => {
-        const visible = filter === "all" || row.dataset.status === filter;
-        row.hidden = !visible;
-        if (visible) shown += 1;
-      });
+    if (emptyMessage) emptyMessage.hidden = shown > 0;
+  }
 
-      emptyMessage.hidden = shown > 0;
-
-      chips.forEach((chip) => {
-        chip.setAttribute("aria-pressed", String(chip.dataset.filter === filter));
-      });
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      currentFilter = chip.dataset.filter;
+      refreshList();
 
       // Start from the top whenever the list changes.
       list.parentElement.scrollTop = 0;
+    });
+  });
+
+  refreshList();
+
+  /* ---------- Supabase client and the signed-in user ---------- */
+
+  const client = window.supabase
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false
+        }
+      })
+    : null;
+
+  // Role name, Home link and initial for the shared pages.
+  // Uses the role on <body> when the page declares one (dashboards),
+  // else the role stored in the user's Supabase metadata, else the one
+  // remembered from this user's last dashboard visit.
+  function applyIdentity(user) {
+    const declared = (body.dataset.role || "").toLowerCase();
+    let key = ROLES[declared] ? declared : null;
+
+    if (!key && user) {
+      const fromMeta = String(
+        user.app_metadata?.role || user.user_metadata?.role || ""
+      ).toLowerCase();
+
+      if (ROLES[fromMeta]) {
+        key = fromMeta;
+      } else {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+          if (saved && saved.uid === user.id && ROLES[saved.role]) {
+            key = saved.role;
+          }
+        } catch (error) {
+          /* storage unavailable: leave the generic labels */
+        }
+      }
     }
 
-    chips.forEach((chip) => {
-      chip.addEventListener("click", () => applyFilter(chip.dataset.filter));
+    if (!key) return;
+
+    // A dashboard remembers the role for the shared pages.
+    if (user && ROLES[declared]) {
+      try {
+        localStorage.setItem(
+          STORE_KEY,
+          JSON.stringify({ uid: user.id, role: declared })
+        );
+      } catch (error) {
+        /* storage unavailable: shared pages fall back to metadata */
+      }
+    }
+
+    const role = ROLES[key];
+    body.dataset.role = role.label;
+    body.dataset.home = body.dataset.home || role.home;
+
+    document.querySelectorAll("[data-role-label]").forEach((element) => {
+      element.textContent = role.label;
     });
 
-    updateCounts();
-    applyFilter("all");
+    document.querySelectorAll("[data-role-initial]").forEach((element) => {
+      element.textContent = role.label.charAt(0);
+    });
+
+    document.querySelectorAll("[data-home-link]").forEach((element) => {
+      element.setAttribute("href", role.home);
+    });
   }
 
-  /* ---------- Session check ---------- */
-  // Convenience only: real protection must stay on the server / Supabase RLS.
-  // Add data-require-session="false" to <body> to skip this on a page.
-
-  async function requireSession() {
-    if (!window.supabase || body.dataset.requireSession === "false") return;
+  // Resolves with the signed-in user (or null). Visitors without a session
+  // are sent to /login/. This is a convenience only: real protection stays
+  // on the server and in Supabase RLS. Add data-require-session="false"
+  // to <body> to skip the redirect on a page.
+  const userReady = (async () => {
+    if (!client) return null;
 
     try {
-      const client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: false
-          }
-        }
-      );
-
       const { data } = await client.auth.getSession();
+      const session = data?.session;
 
-      if (!data?.session) {
-        window.location.replace("/login/");
+      if (!session) {
+        if (body.dataset.requireSession !== "false") {
+          window.location.replace("/login/");
+        }
+        return null;
       }
+
+      applyIdentity(session.user);
+      return session.user;
     } catch (error) {
       console.error("Session check failed:", error);
+      return null;
     }
-  }
+  })();
 
-  requireSession();
+  window.EBRMS = { client, user: userReady, refreshList };
 })();
