@@ -1,48 +1,165 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | EBRMS</title>
-  <link rel="stylesheet" href="/admin/style.css">
-  <style>
-    body {
-      visibility: hidden;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8ff">
+    <meta name="robots" content="noindex">
+
+    <title>Borrowing Requests | EBRMS Admin</title>
+
+    <link rel="stylesheet" href="/shared-view/style.css">
+    <link rel="stylesheet" href="/admin/style.css">
 </head>
-<body>
-  
-<header>
-  <h1>EBRMS</h1>
-  <p>Administrator Dashboard</p>
-  <a href="/logout/" class="sign-out-button">Sign Out</a>
-</header>
+<body data-role="Admin" data-page="dashboard" data-home="/admin/">
 
-  <main>
-    <section>
-      <h2>Welcome, Administrator</h2>
-      <p>You are viewing the Administrator Dashboard.</p>
-    </section>
+    <!-- Top bar -->
+    <header class="topbar">
+        <button type="button" class="menu-toggle" id="menuToggle"
+                aria-label="Open menu" aria-controls="menuPanel"
+                aria-expanded="false">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+        </button>
 
-    <section>
-      <h2>User Management</h2>
-      <p>User account management features will appear here.</p>
-    </section>
+        <a class="brand-logo" href="/admin/" aria-label="EBRMS admin">
+            <span class="brand-logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>EBRMS<span class="brand-period">.</span></span>
+        </a>
 
-    <section>
-      <h2>Equipment Management</h2>
-      <p>Equipment records and availability features will appear here.</p>
-    </section>
+        <span class="topbar-spacer"></span>
+        <span class="role-badge">Admin</span>
+    </header>
 
-    <section>
-      <h2>Transaction Monitoring</h2>
-      <p>Borrowing and returning records will appear here.</p>
-    </section>
-  </main>
+    <div class="menu-scrim" id="menuScrim"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/admin/script.js"></script>
+    <div class="layout">
+
+        <!-- Menu box: always visible on desktop, expands on mobile -->
+        <aside class="menu-panel" id="menuPanel" aria-label="Admin menu">
+
+            <div class="menu-head">
+                <button type="button" class="back-button" id="menuBack">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+                <span class="menu-title">NAVIGATION</span>
+            </div>
+
+            <div class="user-chip">
+                <span class="avatar" aria-hidden="true">A</span>
+                <div class="user-chip-copy">
+                    <strong>Admin</strong>
+                    <span>Signed in</span>
+                </div>
+            </div>
+
+            <p class="menu-label">MENU</p>
+
+            <nav class="menu-nav" aria-label="Admin pages">
+                <a class="menu-link" href="/admin/" data-nav="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="8" y="3" width="8" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="m8 14 2.5 2.5L16 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Borrowing Requests
+                </a>
+
+                <a class="menu-link" href="/admin/equipment/" data-nav="equipment">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 4v5" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="16" cy="14" r="1.2" fill="currentColor"/></svg>
+                    Equipment Management
+                </a>
+
+                <a class="menu-link" href="/admin/returns/" data-nav="returns">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 14 4 9l5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Return Requests
+                </a>
+
+                <a class="menu-link" href="/admin/profile/" data-nav="profile">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="menu-foot">
+                <a class="signout-button" href="/logout/">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round"/>
+                        <path d="M15 8l4 4-4 4M19 12H9"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign out
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="page-head">
+                <button type="button" class="back-button" data-back hidden>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+
+                <div>
+                    <h1>Borrowing Requests</h1>
+                    <p>Review and respond to borrowing requests.</p>
+                </div>
+            </div>
+
+
+            <section class="list-panel" aria-label="Borrowing requests">
+                <div class="list-head" role="group" aria-label="Filter requests">
+                    <button type="button" class="chip" data-filter="all" aria-pressed="true">
+                        All <span class="chip-count" data-count="all">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="pending" aria-pressed="false">
+                        Pending <span class="chip-count" data-count="pending">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="approved" aria-pressed="false">
+                        Approved <span class="chip-count" data-count="approved">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="rejected" aria-pressed="false">
+                        Rejected <span class="chip-count" data-count="rejected">0</span>
+                    </button>
+                </div>
+
+                <div class="list-scroll" tabindex="0" aria-label="Scrollable request list">
+                    <!-- Rows are added by /admin/requests.js from the database. -->
+                    <ul class="item-list" id="itemList"></ul>
+
+                    <p class="list-empty" id="itemEmpty">Loading requests&hellip;</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/shared-view/view.js"></script>
+    <script src="/admin/common.js"></script>
+    <script src="/admin/requests.js"></script>
 </body>
-</html>
+          </html>
