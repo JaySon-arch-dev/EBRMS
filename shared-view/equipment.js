@@ -3,8 +3,9 @@
    File: shared-view/equipment.js
 
    Loads public.equipment from Supabase and fills the dashboard list.
-   Each row shows: photo, equipment name, quantity, available quantity,
-   condition and an Available / Not available badge.
+   Each row shows: photo on the left, then the equipment name, total
+   quantity, available quantity, a status (Available = green,
+   Damaged = red, Maintenance = grey) and a Borrow button below.
 
    Equipment is the same for everyone, so there is no per-user filter.
    Supabase RLS must allow signed-in users to SELECT from the table.
@@ -18,37 +19,58 @@
   const EQUIPMENT_SOURCE = {
     table: "equipment",
 
-    // Optional column with a link to the equipment photo (add it to the
-    // table when photos are ready). Without it a placeholder icon is shown.
-    photoColumn: "photo_url",
+    // Photos live in Supabase Storage. The table column holds the file
+    // name inside the bucket (for example "images (3).jpeg"). A full
+    // https:// link also works. Without a value, a placeholder icon shows.
+    photoColumn: "photo_path",
+    photoBucket: "equipment",     // <-- the exact name of your Storage bucket
 
-    // status values that always mean "not available", whatever the quantity.
-    unavailableStatuses: [
-      "unavailable", "not available", "maintenance",
-      "under maintenance", "damaged", "disabled", "lost"
-    ],
+    // Words (in the status or condition column) that decide the status shown.
+    damagedWords: ["damag", "broken"],
+    maintenanceWords: ["maint", "repair"],
+    unavailableStatuses: ["unavailable", "not available", "disabled", "lost"],
 
     // Turns one database record into one row on the page.
     toRow(record) {
+      const text =
+        `${record.status || ""} ${record.eq_condition || ""}`.toLowerCase();
       const status = String(record.status || "").trim().toLowerCase();
       const availableQty = Number(record.available_quantity);
-      const available =
-        availableQty > 0 && !this.unavailableStatuses.includes(status);
+      const has = (words) => words.some((word) => text.includes(word));
+
+      let label;
+      let tone;
+      let available = false;
+
+      if (has(this.damagedWords)) {
+        label = "Damaged";
+        tone = "is-danger";
+      } else if (has(this.maintenanceWords)) {
+        label = "Maintenance";
+        tone = "is-neutral";
+      } else if (this.unavailableStatuses.includes(status)) {
+        label = "Not available";
+        tone = "is-neutral";
+      } else if (availableQty > 0) {
+        label = "Available";
+        tone = "is-success";
+        available = true;
+      } else {
+        label = "Fully borrowed";
+        tone = "is-neutral";
+      }
 
       return {
+        id: record.eq_id,
         title: record.eq_name,
-        quantity: record.quantity,
+        total: record.quantity,
         availableQuantity: record.available_quantity,
-        condition: record.eq_condition,
         photo: record[this.photoColumn],
+        label,
+        tone,
         status: available ? "available" : "unavailable"
       };
     }
-  };
-
-  const BADGES = {
-    available: { label: "Available", tone: "is-success" },
-    unavailable: { label: "Not available", tone: "is-danger" }
   };
 
   const ICON =
@@ -65,11 +87,23 @@
   detail.hidden = true;
   message.after(detail);
 
-  // Only normal web links or site paths are used as photo sources.
+  // Turns the stored value into a photo link. Only https:// links are used.
   function safePhotoUrl(value) {
-    if (typeof value !== "string") return null;
-    const url = value.trim();
-    return /^(https:\/\/|\/(?!\/))/.test(url) ? url : null;
+    if (typeof value !== "string" || !value.trim()) return null;
+
+    let url = value.trim();
+
+    if (!/^https:\/\//.test(url)) {
+      const { client } = window.EBRMS;
+      if (!client || !EQUIPMENT_SOURCE.photoBucket) return null;
+
+      // The bucket must be public for this link to work.
+      url = client.storage
+        .from(EQUIPMENT_SOURCE.photoBucket)
+        .getPublicUrl(url.replace(/^\/+/, "")).data.publicUrl;
+    }
+
+    return /^https:\/\//.test(url) ? url : null;
   }
 
   function show(value) {
@@ -80,11 +114,9 @@
 
   // Rows are built with textContent so database text is never run as HTML.
   function buildRow(item) {
-    const badge = BADGES[item.status] || BADGES.unavailable;
-
     const row = document.createElement("li");
-    row.className = "item-row";
-    row.dataset.status = BADGES[item.status] ? item.status : "unavailable";
+    row.className = "item-row is-equipment";
+    row.dataset.status = item.status;
 
     const photo = document.createElement("span");
     photo.className = "item-photo";
@@ -118,19 +150,33 @@
 
     const stockEl = document.createElement("span");
     stockEl.className = "item-meta";
-    stockEl.textContent =
-      `Quantity: ${show(item.quantity)} \u00B7 Available: ${show(item.availableQuantity)}`;
+    stockEl.append(`Total: ${show(item.total)} \u00B7 Available: `);
 
-    const conditionEl = document.createElement("span");
-    conditionEl.className = "item-meta";
-    conditionEl.textContent = `Condition: ${show(item.condition)}`;
+    const availableEl = document.createElement("strong");
+    availableEl.textContent = show(item.availableQuantity);
+    stockEl.append(availableEl);
 
-    const badgeEl = document.createElement("span");
-    badgeEl.className = "badge " + badge.tone;
-    badgeEl.textContent = badge.label;
+    const statusEl = document.createElement("span");
+    statusEl.className = "status-pill " + item.tone;
+    statusEl.textContent = item.label;
 
-    copy.append(titleEl, stockEl, conditionEl);
-    row.append(photo, copy, badgeEl);
+    const borrowButton = document.createElement("button");
+    borrowButton.type = "button";
+    borrowButton.className = "borrow-button";
+    borrowButton.textContent = "Borrow";
+    borrowButton.disabled = item.status !== "available";
+
+    // Borrowing is connected later. Listen for this event to start it.
+    borrowButton.addEventListener("click", () => {
+      document.dispatchEvent(
+        new CustomEvent("ebrms:borrow", {
+          detail: { id: item.id, name: item.title }
+        })
+      );
+    });
+
+    copy.append(titleEl, stockEl, statusEl, borrowButton);
+    row.append(photo, copy);
     return row;
   }
 
