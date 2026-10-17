@@ -3,8 +3,7 @@
    File: shared-view/history/script.js
 
    Shows only the signed-in user's own records.
-   While HISTORY_SOURCE.table is null, the sample rows in
-   index.html stay visible (UI preview only).
+   While HISTORY_SOURCE.table is null the list stays empty.
    ========================================================= */
 
 (() => {
@@ -68,7 +67,7 @@
   }
 
   async function loadHistory() {
-    if (!HISTORY_SOURCE.table) return;   // keep the sample rows
+    if (!HISTORY_SOURCE.table) return;   // not connected yet: stay empty
 
     const { client, user: userReady, refreshList } = window.EBRMS;
     const user = await userReady;
