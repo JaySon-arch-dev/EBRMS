@@ -4,7 +4,8 @@
 
    Shows only the signed-in user's own details.
    Each value comes from, in this order:
-     1. the user's row in PROFILE_SOURCE.table (full_name, user_id, ...)
+     1. the user's row in the users table (full_name, user_id, ...);
+      the table name is set in view.js (PROFILE_SOURCE)
      2. the user's Supabase metadata
      3. their Supabase account (email, created_at)
      4. the role detected by view.js (for "role")
@@ -12,15 +13,6 @@
    ========================================================= */
 
 (() => {
-  // The table that holds full_name and user_id. Change "users" to your
-  // real table name if it is different.
-  // matchColumns: the columns tried, in order, to find the signed-in
-  // user's own row ("id" = the Supabase auth user id).
-  const PROFILE_SOURCE = {
-    table: "users",
-    matchColumns: ["id", "email"]
-  };
-
   const DASH = "\u2014";
 
   function formatValue(field, value) {
@@ -41,40 +33,13 @@
   }
 
   async function loadProfile() {
-    const { client, user: userReady } = window.EBRMS;
+    const { user: userReady, getProfile } = window.EBRMS;
     const user = await userReady;
 
     if (!user) return;
 
-    let row = null;
-
-    if (PROFILE_SOURCE.table && client) {
-      // These filters are a convenience. Supabase RLS must be the rule
-      // that really limits each user to their own row.
-      for (const column of PROFILE_SOURCE.matchColumns) {
-        const match = column === "email" ? user.email : user.id;
-        if (!match) continue;
-
-        const { data, error } = await client
-          .from(PROFILE_SOURCE.table)
-          .select("*")
-          .eq(column, match)
-          .maybeSingle();
-
-        if (error) {
-          console.error(
-            `Profile lookup by "${column}" failed:`,
-            error.message
-          );
-          continue;
-        }
-
-        if (data) {
-          row = data;
-          break;
-        }
-      }
-    }
+    // The user's own row (full_name, user_id, ...) from view.js.
+    const row = await getProfile();
 
     const values = {
       ...user.app_metadata,
