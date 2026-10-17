@@ -15,7 +15,7 @@
 
     // The Storage bucket that holds equipment photos. Use the same
     // name as photoBucket in shared-view/equipment.js.
-    photoBucket: "equipment",
+    photoBucket: "Photos",
 
     // What is saved in borrowing_transactions.approved_by:
     // "full_name" or "user_id".
