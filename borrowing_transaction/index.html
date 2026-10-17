@@ -1,1 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8ff">
+    <meta name="robots" content="noindex">
 
+    <title>My Borrowing Transaction | EBRMS</title>
+
+    <link rel="stylesheet" href="/shared-view/style.css">
+</head>
+<body data-page="transactions">
+
+    <!-- Top bar -->
+    <header class="topbar">
+        <button type="button" class="menu-toggle" id="menuToggle"
+                aria-label="Open menu" aria-controls="menuPanel"
+                aria-expanded="false">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <a class="brand-logo" href="/login/" aria-label="EBRMS menu" data-home-link>
+            <span class="brand-logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>EBRMS<span class="brand-period">.</span></span>
+        </a>
+
+        <span class="topbar-spacer"></span>
+        <span class="role-badge" data-role-label>Account</span>
+    </header>
+
+    <div class="menu-scrim" id="menuScrim"></div>
+
+    <div class="layout">
+
+        <!-- Menu box: always visible on desktop, expands on mobile -->
+        <aside class="menu-panel" id="menuPanel" aria-label="Account menu">
+
+            <div class="menu-head">
+                <button type="button" class="back-button" id="menuBack">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+                <span class="menu-title">NAVIGATION</span>
+            </div>
+
+            <div class="user-chip">
+                <span class="avatar" aria-hidden="true" data-role-initial>?</span>
+                <div class="user-chip-copy">
+                    <strong data-role-label>Account</strong>
+                    <span>Signed in</span>
+                </div>
+            </div>
+
+            <p class="menu-label">MENU</p>
+
+            <nav class="menu-nav" aria-label="Account pages">
+                <a class="menu-link" href="/login/" data-nav="dashboard" data-home-link>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="3.5" y="3.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="13.5" y="3.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="3.5" y="13.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <rect x="13.5" y="13.5" width="7" height="7" rx="2"
+                              stroke="currentColor" stroke-width="1.7"/>
+                    </svg>
+                    Menu
+                </a>
+
+                <a class="menu-link" href="/borrowing_transaction/" data-nav="transactions">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M8 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <rect x="8" y="3" width="8" height="5" rx="1.5"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <path d="m8 14 2.5 2.5L16 11"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    My Borrowing Transaction
+                </a>
+
+                <a class="menu-link" href="/return_request/" data-nav="returns">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 14 4 9l5-5"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    My Return Request
+                </a>
+
+                <a class="menu-link" href="/shared-view/history/" data-nav="history">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8.5"
+                                stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M12 7.5V12l3 2"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    History
+                </a>
+
+                <a class="menu-link" href="/shared-view/profile/" data-nav="profile">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"
+                                stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M4.5 20a7.5 7.5 0 0 1 15 0"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                    </svg>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="menu-foot">
+                <a class="signout-button" href="/logout/">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round"/>
+                        <path d="M15 8l4 4-4 4M19 12H9"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign out
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="page-head">
+                <button type="button" class="back-button" data-back hidden>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+
+                <div>
+                    <h1>My Borrowing Transaction</h1>
+                    <p>Track your borrowing requests.</p>
+                </div>
+            </div>
+
+            <section class="list-panel" aria-label="Your borrowing requests">
+                <div class="list-head" role="group" aria-label="Filter requests">
+                    <button type="button" class="chip" data-filter="all" aria-pressed="true">
+                        All <span class="chip-count" data-count="all">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="pending" aria-pressed="false">
+                        Pending <span class="chip-count" data-count="pending">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="approved" aria-pressed="false">
+                        Approved <span class="chip-count" data-count="approved">0</span>
+                    </button>
+                </div>
+
+                <div class="list-scroll" tabindex="0" aria-label="Scrollable request list">
+                    <!-- Rows are added by /borrowing_transaction/script.js from the database. -->
+                    <ul class="item-list" id="itemList"></ul>
+
+                    <p class="list-empty" id="itemEmpty">Loading your requests&hellip;</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/shared-view/view.js"></script>
+    <script src="/borrowing_transaction/script.js"></script>
+</body>
+      </html>
