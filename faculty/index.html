@@ -187,110 +187,15 @@
                 </div>
 
                 <div class="equipment-scroll" tabindex="0" aria-label="Scrollable equipment list">
-                    <!-- SAMPLE ROWS (visual placeholder only). Replace with real equipment later.
-                         Each row needs data-status="available" or "unavailable". -->
-                    <ul class="item-list" id="equipmentList">
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Projector</span>
-                                <span class="item-meta">Audio-Visual</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Laptop</span>
-                                <span class="item-meta">Computers</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="unavailable">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">HDMI Cable</span>
-                                <span class="item-meta">Accessories</span>
-                            </div>
-                            <span class="badge is-danger">Not available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Extension Cord</span>
-                                <span class="item-meta">Accessories</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Wireless Mouse</span>
-                                <span class="item-meta">Computers</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="unavailable">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Portable Speaker</span>
-                                <span class="item-meta">Audio-Visual</span>
-                            </div>
-                            <span class="badge is-danger">Not available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Camera Tripod</span>
-                                <span class="item-meta">Photography</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Microphone</span>
-                                <span class="item-meta">Audio-Visual</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="unavailable">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Document Camera</span>
-                                <span class="item-meta">Audio-Visual</span>
-                            </div>
-                            <span class="badge is-danger">Not available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Whiteboard Marker Set</span>
-                                <span class="item-meta">Supplies</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="available">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Laser Pointer</span>
-                                <span class="item-meta">Accessories</span>
-                            </div>
-                            <span class="badge is-success">Available</span>
-                        </li>
-                        <li class="item-row" data-status="unavailable">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Webcam</span>
-                                <span class="item-meta">Computers</span>
-                            </div>
-                            <span class="badge is-danger">Not available</span>
-                        </li>
-                    </ul>
+                    <!-- Rows are added by /shared-view/equipment.js from the database. -->
+                    <ul class="item-list" id="equipmentList"></ul>
 
-                    <p class="list-empty" id="equipmentEmpty" hidden>
-                        No equipment in this list.
-                    </p>
+                    <div class="list-empty" id="equipmentEmpty">
+                        <p id="equipmentEmptyText">Loading equipment&hellip;</p>
+                        <button type="button" class="chip" id="equipmentRetry" hidden>
+                            Try again
+                        </button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -298,5 +203,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/shared-view/view.js"></script>
+    <script src="/shared-view/equipment.js"></script>
 </body>
-                            </html>
+                            </html> 
