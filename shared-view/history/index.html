@@ -185,77 +185,11 @@
                 </div>
 
                 <div class="list-scroll" tabindex="0" aria-label="Scrollable history list">
-                    <!-- SAMPLE ROWS (visual placeholder only). They are replaced automatically
-                         when HISTORY_SOURCE is set in history/script.js. -->
-                    <ul class="item-list" id="itemList">
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Projector</span>
-                                <span class="item-meta">Borrowed Oct 8 · Returned Oct 9</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                        <li class="item-row" data-status="overdue">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Laptop</span>
-                                <span class="item-meta">Borrowed Oct 1 · Returned Oct 6</span>
-                            </div>
-                            <span class="badge is-danger">Overdue</span>
-                        </li>
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">HDMI Cable</span>
-                                <span class="item-meta">Borrowed Sep 28 · Returned Sep 29</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Wireless Mouse</span>
-                                <span class="item-meta">Borrowed Sep 22 · Returned Sep 23</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                        <li class="item-row" data-status="overdue">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Portable Speaker</span>
-                                <span class="item-meta">Borrowed Sep 15 · Returned Sep 19</span>
-                            </div>
-                            <span class="badge is-danger">Overdue</span>
-                        </li>
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Camera Tripod</span>
-                                <span class="item-meta">Borrowed Sep 10 · Returned Sep 10</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Microphone</span>
-                                <span class="item-meta">Borrowed Sep 2 · Returned Sep 3</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                        <li class="item-row" data-status="returned">
-                            <span class="item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z M4 8v8l8 4 8-4V8" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                            <div class="item-copy">
-                                <span class="item-title">Extension Cord</span>
-                                <span class="item-meta">Borrowed Aug 26 · Returned Aug 27</span>
-                            </div>
-                            <span class="badge is-success">Returned</span>
-                        </li>
-                    </ul>
+                    <!-- Rows are added by history/script.js once HISTORY_SOURCE is set. -->
+                    <ul class="item-list" id="itemList"></ul>
 
-                    <p class="list-empty" id="itemEmpty" hidden>
-                        No history to show.
+                    <p class="list-empty" id="itemEmpty">
+                        No history yet. Your past borrowing records will appear here.
                     </p>
                 </div>
             </section>
@@ -266,4 +200,4 @@
     <script src="/shared-view/view.js"></script>
     <script src="/shared-view/history/script.js"></script>
 </body>
-  </html>
+                            </html> 
