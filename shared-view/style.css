@@ -1000,6 +1000,12 @@ p {
     font-weight: 700;
 }
 
+.photo-debug {
+    color: #b4690e;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
 .status-pill {
     display: inline-flex;
     align-items: center;
@@ -1226,4 +1232,4 @@ p {
     *::after {
         transition-duration: 0.01ms !important;
     }
-   }
+} 
