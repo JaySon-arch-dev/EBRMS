@@ -112,11 +112,43 @@
       : String(value);
   }
 
+  // Asks the photo link why it failed, so the reason can be shown on the
+  // page (handy on a phone, where the console is hard to reach).
+  async function photoFailureReason(url) {
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      let info = text.slice(0, 80);
+
+      try {
+        const json = JSON.parse(text);
+        info = json.message || json.error || info;
+      } catch (error) {
+        /* not JSON: keep the plain text */
+      }
+
+      return `HTTP ${response.status}: ${info}`;
+    } catch (error) {
+      return "the photo link could not be reached";
+    }
+  }
+
   // Rows are built with textContent so database text is never run as HTML.
   function buildRow(item) {
     const row = document.createElement("li");
     row.className = "item-row is-equipment";
     row.dataset.status = item.status;
+
+    // Debug line, only used while SHOW_DETAILS is true.
+    const note = document.createElement("span");
+    note.className = "item-meta photo-debug";
+    note.hidden = true;
+
+    const report = (text) => {
+      if (!SHOW_DETAILS) return;
+      note.textContent = text;
+      note.hidden = false;
+    };
 
     const photo = document.createElement("span");
     photo.className = "item-photo";
@@ -134,11 +166,26 @@
       image.src = url;
       image.alt = "";
       image.loading = "lazy";
-      image.addEventListener("error", placeholder);
+      image.addEventListener("error", async () => {
+        console.warn("Equipment photo did not load:", url);
+        placeholder();
+
+        if (SHOW_DETAILS) {
+          const reason = await photoFailureReason(url);
+          report(
+            `Photo problem: ${reason}. Bucket "${EQUIPMENT_SOURCE.photoBucket}", file "${item.photo}".`
+          );
+        }
+      });
       photo.classList.add("has-image");
       photo.append(image);
     } else {
       placeholder();
+      report(
+        item.photo
+          ? "Photo problem: the stored value could not be turned into a link."
+          : `No ${EQUIPMENT_SOURCE.photoColumn} is set for this item.`
+      );
     }
 
     const copy = document.createElement("div");
@@ -175,7 +222,7 @@
       );
     });
 
-    copy.append(titleEl, stockEl, statusEl, borrowButton);
+    copy.append(titleEl, stockEl, statusEl, borrowButton, note);
     row.append(photo, copy);
     return row;
   }
@@ -217,6 +264,16 @@
       );
       refreshList();
       return;
+    }
+
+    if (
+      SHOW_DETAILS &&
+      data.length > 0 &&
+      !(EQUIPMENT_SOURCE.photoColumn in data[0])
+    ) {
+      console.warn(
+        `The equipment table has no "${EQUIPMENT_SOURCE.photoColumn}" column, so no photos can show.`
+      );
     }
 
     // Sorted by name here in the page.
