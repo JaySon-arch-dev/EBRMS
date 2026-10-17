@@ -1,36 +1,348 @@
+/* =========================================================
+   EBRMS — ADMIN
+   File: admin/style.css
+   Only what the admin pages need on top of shared-view/style.css
+   (load that file first).
+   ========================================================= */
 
-* {
-    box-sizing: border-box;
+/* ---------- Row actions ---------- */
+
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-top: 6px;
 }
 
-body {
+.action-row .borrow-button {
+    margin-top: 0;
+}
+
+.reject-button,
+.edit-button {
+    min-height: 36px;
+    padding: 0 18px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    color: var(--text-secondary);
+    background: var(--panel-bg);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.reject-button:hover {
+    color: var(--danger-dark);
+    background: var(--danger-light);
+    border-color: #f6ccd4;
+}
+
+.edit-button:hover {
+    color: var(--brand-primary);
+    background: var(--brand-primary-light);
+    border-color: #cfd9ff;
+}
+
+
+/* ---------- Search and Add bar (Equipment Management) ---------- */
+
+.panel-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 20px;
+
+    border-bottom: 1px solid var(--border-color);
+}
+
+.search-input {
+    flex: 1;
+
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 14px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    color: var(--text-primary);
+    background: #fbfcff;
+
+    font: inherit;
+    font-size: 14px;
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-input:focus {
+    outline: none;
+
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.12);
+}
+
+.add-button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+
+    min-height: 44px;
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: var(--radius-sm);
+
+    color: #ffffff;
+    background: linear-gradient(135deg, #4d6cf5, #3a56dc);
+    box-shadow: var(--shadow-button);
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-normal);
+}
+
+.add-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.add-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(66, 99, 235, 0.26);
+}
+
+
+/* ---------- Add / edit form ---------- */
+
+.modal.is-form {
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    max-height: calc(100svh - 32px);
+
+    overflow-y: auto;
+}
+
+.form-card {
+    align-items: stretch;
+    gap: 14px;
+
+    text-align: left;
+}
+
+.form-card h2 {
+    margin-bottom: 2px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.form-label,
+.dialog-input > span {
+    color: var(--text-secondary);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.form-hint {
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.form-control,
+.dialog-input textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    color: var(--text-primary);
+    background: #fbfcff;
+
+    font: inherit;
+    font-size: 14px;
+}
+
+.form-control:focus,
+.dialog-input textarea:focus {
+    outline: none;
+
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.12);
+}
+
+.form-control[readonly] {
+    color: var(--text-muted);
+    background: #f3f5fa;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.photo-field {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.photo-preview {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 64px;
+    height: 64px;
+    padding: 16px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    color: var(--brand-primary);
+    background: var(--brand-primary-light);
+}
+
+.photo-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: -16px;
+    padding: 0;
+
+    object-fit: cover;
+}
+
+.photo-input {
+    flex: 1;
+
+    min-width: 0;
+
+    color: var(--text-secondary);
+
+    font: inherit;
+    font-size: 13px;
+}
+
+.form-error {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f3ed;
-    color: #333;
+    padding: 10px 12px;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--danger-dark);
+    background: var(--danger-light);
+
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
-.dashboard {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 20px;
+.form-card .modal-actions {
+    margin-top: 6px;
 }
 
-h1 {
-    margin-bottom: 12px;
+/* Reason box in the Reject dialog */
+.dialog-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    width: 100%;
+    margin-top: 14px;
+
+    text-align: left;
 }
 
-.sign-out-button {
-  display: inline-block;
-  padding: 10px 16px;
-  margin-top: 10px;
-  background: #514735;
-  color: #ffffff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 14px;
+.dialog-input textarea {
+    min-height: 72px;
+    padding: 10px 14px;
+
+    resize: vertical;
 }
 
-.sign-out-button:hover {
-  opacity: 0.85;
+
+/* ---------- Short "saved" message ---------- */
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: 100;
+
+    max-width: calc(100vw - 32px);
+    padding: 12px 20px;
+
+    border-radius: 999px;
+
+    color: #ffffff;
+    background: #1b2540;
+    box-shadow: 0 12px 30px rgba(27, 37, 64, 0.3);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 12px);
+
+    transition:
+        opacity var(--transition-normal),
+        transform var(--transition-normal);
 }
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+
+@media (max-width: 899px) {
+    .panel-toolbar {
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .add-button span {
+        display: none;
+    }
+
+    .add-button {
+        padding: 0 14px;
+    }
+        }
