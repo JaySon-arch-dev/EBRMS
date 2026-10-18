@@ -370,5 +370,9 @@
     }
   }
 
-  load();
-})(); 
+  load().catch((error) => {
+    console.error("Loading failed:", error);
+    scroller.removeAttribute("aria-busy");
+    showMessage("Something went wrong while loading.", error.message);
+  });
+})();
