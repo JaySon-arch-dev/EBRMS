@@ -179,17 +179,17 @@
                     <button type="button" class="chip" data-filter="returned" aria-pressed="false">
                         Returned <span class="chip-count" data-count="returned">0</span>
                     </button>
-                    <button type="button" class="chip" data-filter="overdue" aria-pressed="false">
-                        Overdue <span class="chip-count" data-count="overdue">0</span>
+                    <button type="button" class="chip" data-filter="rejected" aria-pressed="false">
+                        Rejected <span class="chip-count" data-count="rejected">0</span>
                     </button>
                 </div>
 
                 <div class="list-scroll" tabindex="0" aria-label="Scrollable history list">
-                    <!-- Rows are added by history/script.js once HISTORY_SOURCE is set. -->
+                    <!-- Rows are added by history/script.js from the database. -->
                     <ul class="item-list" id="itemList"></ul>
 
                     <p class="list-empty" id="itemEmpty">
-                        No history yet. Your past borrowing records will appear here.
+                        No history yet. Finished requests will appear here.
                     </p>
                 </div>
             </section>
@@ -200,4 +200,4 @@
     <script src="/shared-view/view.js"></script>
     <script src="/shared-view/history/script.js"></script>
 </body>
-                            </html> 
+    </html>
