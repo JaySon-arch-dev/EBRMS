@@ -10,6 +10,32 @@
 
     <link rel="stylesheet" href="/shared-view/style.css">
     <link rel="stylesheet" href="/admin/style.css">
+    <script>
+        // Setup help: if a script file is missing or crashes, say so on the
+        // page instead of staying on "Loading...".
+        (function () {
+            function say(text) {
+                var box = document.getElementById("itemEmpty");
+                if (box && /Loading/.test(box.textContent)) box.textContent = text;
+            }
+
+            window.addEventListener("error", function (event) {
+                var target = event.target || {};
+                var file = target.src || target.href;
+                say(file
+                    ? "This file didn't load: " + file
+                    : "Script error: " + event.message);
+            }, true);
+
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    if (!window.ADMIN) {
+                        say("The admin scripts didn't start. Check that /admin/common.js loads.");
+                    }
+                }, 1500);
+            });
+        })();
+    </script>
 </head>
 <body data-role="Admin" data-page="dashboard" data-home="/admin/">
 
@@ -82,12 +108,12 @@
                     Borrowing Requests
                 </a>
 
-                <a class="menu-link" href="/admin/equipment_management/" data-nav="equipment_management">
+                <a class="menu-link" href="/admin/equipment_management/" data-nav="equipment">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 4v5" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="16" cy="14" r="1.2" fill="currentColor"/></svg>
                     Equipment Management
                 </a>
 
-                <a class="menu-link" href="/admin/returns/" data-nav="returns">
+                <a class="menu-link" href="/admin/return/" data-nav="returns">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 14 4 9l5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Return Requests
                 </a>
@@ -148,7 +174,7 @@
                 </div>
 
                 <div class="list-scroll" tabindex="0" aria-label="Scrollable request list">
-                    <!-- Rows are added by /admin/requests.js from the database. -->
+                    <!-- Rows are added by /admin/request.js from the database. -->
                     <ul class="item-list" id="itemList"></ul>
 
                     <p class="list-empty" id="itemEmpty">Loading requests&hellip;</p>
@@ -160,6 +186,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/shared-view/view.js"></script>
     <script src="/admin/common.js"></script>
-    <script src="/admin/requests.js"></script>
+    <script src="/admin/request.js"></script>
 </body>
-          </html>
+    </html>
