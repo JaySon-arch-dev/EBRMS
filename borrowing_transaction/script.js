@@ -22,6 +22,7 @@
     pending: { label: "Pending", tone: "is-warning" },
     approved: { label: "Approved", tone: "is-success" },
     borrowed: { label: "Borrowed", tone: "is-info" },
+    "return requested": { label: "Return requested", tone: "is-warning" },
     returned: { label: "Returned", tone: "is-neutral" },
     rejected: { label: "Rejected", tone: "is-danger" },
     declined: { label: "Declined", tone: "is-danger" },
