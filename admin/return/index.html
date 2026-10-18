@@ -10,6 +10,32 @@
 
     <link rel="stylesheet" href="/shared-view/style.css">
     <link rel="stylesheet" href="/admin/style.css">
+    <script>
+        // Setup help: if a script file is missing or crashes, say so on the
+        // page instead of staying on "Loading...".
+        (function () {
+            function say(text) {
+                var box = document.getElementById("itemEmpty");
+                if (box && /Loading/.test(box.textContent)) box.textContent = text;
+            }
+
+            window.addEventListener("error", function (event) {
+                var target = event.target || {};
+                var file = target.src || target.href;
+                say(file
+                    ? "This file didn't load: " + file
+                    : "Script error: " + event.message);
+            }, true);
+
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    if (!window.ADMIN) {
+                        say("The admin scripts didn't start. Check that /admin/common.js loads.");
+                    }
+                }, 1500);
+            });
+        })();
+    </script>
 </head>
 <body data-role="Admin" data-page="returns" data-home="/admin/">
 
@@ -126,16 +152,29 @@
 
                 <div>
                     <h1>Return Requests</h1>
-                    <p>Review items that borrowers want to return.</p>
+                    <p>Confirm items that borrowers are returning.</p>
                 </div>
             </div>
 
 
             <section class="list-panel" aria-label="Return requests">
-                <div class="list-scroll">
-                    <p class="list-empty">
-                        No return requests yet. They will appear here once returning is connected.
-                    </p>
+                <div class="list-head" role="group" aria-label="Filter returns">
+                    <button type="button" class="chip" data-filter="all" aria-pressed="true">
+                        All <span class="chip-count" data-count="all">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="requested" aria-pressed="false">
+                        Requested <span class="chip-count" data-count="requested">0</span>
+                    </button>
+                    <button type="button" class="chip" data-filter="returned" aria-pressed="false">
+                        Returned <span class="chip-count" data-count="returned">0</span>
+                    </button>
+                </div>
+
+                <div class="list-scroll" tabindex="0" aria-label="Scrollable request list">
+                    <!-- Rows are added by /admin/return/script.js from the database. -->
+                    <ul class="item-list" id="itemList"></ul>
+
+                    <p class="list-empty" id="itemEmpty">Loading return requests&hellip;</p>
                 </div>
             </section>
         </main>
@@ -143,5 +182,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/shared-view/view.js"></script>
+    <script src="/admin/common.js"></script>
+    <script src="/admin/return/script.js"></script>
 </body>
-              </html>
+    </html>
