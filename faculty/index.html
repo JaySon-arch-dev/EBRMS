@@ -174,6 +174,17 @@
             </div>
 
             <section class="equipment-panel" aria-label="Equipment list">
+                <div class="search-bar">
+                    <label class="search-field">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                        <input type="search" id="searchInput" placeholder="Search equipment"
+                               aria-label="Search equipment" autocomplete="off">
+                    </label>
+                </div>
+
                 <div class="equipment-head" role="group" aria-label="Filter equipment">
                     <button type="button" class="chip" data-filter="all" aria-pressed="true">
                         All <span class="chip-count" data-count="all">0</span>
@@ -206,4 +217,4 @@
     <script src="/shared-view/equipment.js"></script>
     <script src="/shared-view/borrow.js"></script>
 </body>
-                            </html>
+                    </html>
