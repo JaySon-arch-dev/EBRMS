@@ -23,7 +23,7 @@
     // name inside the bucket (for example "images (3).jpeg"). A full
     // https:// link also works. Without a value, a placeholder icon shows.
     photoColumn: "photo_path",
-    photoBucket: "Photos",     // <-- the exact name of your Storage bucket
+    photoBucket: "equipment",     // <-- the exact name of your Storage bucket
 
     // Words (in the status or condition column) that decide the status shown.
     damagedWords: ["damag", "broken"],
@@ -138,6 +138,9 @@
     const row = document.createElement("li");
     row.className = "item-row is-equipment";
     row.dataset.status = item.status;
+
+    // What the search box looks through: name, ID and status.
+    row.dataset.search = `${item.title || ""} ${item.id || ""} ${item.label || ""}`.toLowerCase();
 
     // Debug line, only used while SHOW_DETAILS is true.
     const note = document.createElement("span");
