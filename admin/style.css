@@ -345,4 +345,100 @@
     .add-button {
         padding: 0 14px;
     }
-        }
+}
+
+
+/* ---------- User Management ---------- */
+
+.user-avatar {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+    background: linear-gradient(145deg, #6280ff, #3d5be0);
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.user-avatar.is-off {
+    background: #b9c1d6;
+}
+
+.role-filter {
+    flex: 0 0 auto;
+
+    width: auto;
+    max-width: 150px;
+}
+
+.inline-button {
+    flex: 0 0 auto;
+
+    min-height: 46px;
+    padding: 0 14px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    color: var(--brand-primary);
+    background: var(--panel-bg);
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.inline-button:hover {
+    background: var(--brand-primary-light);
+}
+
+.password-row {
+    display: flex;
+    gap: 8px;
+}
+
+.password-row .form-control {
+    flex: 1;
+
+    min-width: 0;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@media (max-width: 560px) {
+    .panel-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .panel-toolbar .search-input:not(.role-filter) {
+        flex: 1 1 100%;
+    }
+
+    .role-filter {
+        flex: 1;
+
+        max-width: none;
+    }
+}
+
+
+/* ---------- Delete confirmation ---------- */
+
+.modal-button.is-primary.is-danger {
+    background: linear-gradient(135deg, #e5617a, #cc3f58);
+    box-shadow: 0 6px 14px rgba(220, 76, 100, 0.25);
+}
+
+.modal-button.is-primary.is-danger:hover {
+    box-shadow: 0 8px 18px rgba(220, 76, 100, 0.35);
+                               }
