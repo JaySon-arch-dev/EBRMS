@@ -1092,6 +1092,70 @@ p {
     }
 }
 
+/* ---------- Search above the equipment filters ---------- */
+
+.search-bar {
+    padding: 14px 20px 0;
+}
+
+.search-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 46px;
+    padding: 0 14px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+
+    background: #fbfcff;
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.search-field svg {
+    flex: 0 0 auto;
+
+    width: 18px;
+    height: 18px;
+
+    color: var(--text-muted);
+}
+
+.search-field input {
+    flex: 1;
+
+    min-width: 0;
+    padding: 0;
+
+    border: 0;
+    outline: none;
+
+    color: var(--text-primary);
+    background: transparent;
+
+    font: inherit;
+    font-size: 14px;
+}
+
+.search-field input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-field:focus-within {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.12);
+}
+
+@media (max-width: 899px) {
+    .search-bar {
+        padding: 12px 16px 0;
+    }
+}
+
 /* ---------- 7. Shared pages: History and Profile ---------- */
 
 .badge.is-neutral {
@@ -1398,4 +1462,4 @@ p {
     *::after {
         transition-duration: 0.01ms !important;
     }
-   } 
+       }
