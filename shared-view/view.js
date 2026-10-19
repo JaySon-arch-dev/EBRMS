@@ -3,7 +3,7 @@
    File: shared-view/view.js
    - Expanding menu on mobile (three-line button)
    - Back navigation
-   - List filters (equipment, history)
+   - List filters and search (equipment, history)
    - Highlights the current page in the menu
    - One shared Supabase client + the signed-in user
      (window.EBRMS.client, .user, .getProfile())
@@ -147,17 +147,31 @@
     document.getElementById("itemEmpty");
   const chips = document.querySelectorAll(".chip[data-filter]");
 
-  let currentFilter = "all";
+  const searchInput = document.getElementById("searchInput");
+  const emptyText = document.getElementById("equipmentEmptyText") || emptyMessage;
 
+  let currentFilter = "all";
+  let searchTerm = "";
+
+  function matchesSearch(row) {
+    if (!searchTerm) return true;
+    return (row.dataset.search || row.textContent.toLowerCase()).includes(searchTerm);
+  }
+
+  // Shows the rows that match BOTH the search box and the selected filter.
+  // The numbers on the filters count the rows that match the search.
   function refreshList() {
     if (!list || !chips.length) return;
 
     const rows = Array.from(list.querySelectorAll(".item-row"));
+    const searched = rows.filter(matchesSearch);
     let shown = 0;
 
     rows.forEach((row) => {
       const visible =
-        currentFilter === "all" || row.dataset.status === currentFilter;
+        searched.includes(row) &&
+        (currentFilter === "all" || row.dataset.status === currentFilter);
+
       row.hidden = !visible;
       if (visible) shown += 1;
     });
@@ -166,8 +180,8 @@
       const key = element.dataset.count;
       element.textContent =
         key === "all"
-          ? rows.length
-          : rows.filter((row) => row.dataset.status === key).length;
+          ? searched.length
+          : searched.filter((row) => row.dataset.status === key).length;
     });
 
     chips.forEach((chip) => {
@@ -177,7 +191,15 @@
       );
     });
 
-    if (emptyMessage) emptyMessage.hidden = shown > 0;
+    if (emptyMessage) {
+      emptyMessage.hidden = shown > 0;
+
+      if (shown === 0 && rows.length > 0 && emptyText) {
+        emptyText.textContent = searchTerm
+          ? "Nothing matches your search."
+          : "Nothing in this list.";
+      }
+    }
   }
 
   chips.forEach((chip) => {
@@ -189,6 +211,22 @@
       list.parentElement.scrollTop = 0;
     });
   });
+
+  // Search box (shown above the filters on the equipment list).
+  if (searchInput && list && chips.length) {
+    searchInput.addEventListener("input", () => {
+      searchTerm = searchInput.value.trim().toLowerCase();
+      refreshList();
+      list.parentElement.scrollTop = 0;
+    });
+
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && searchInput.value) {
+        searchInput.value = "";
+        searchInput.dispatchEvent(new Event("input"));
+      }
+    });
+  }
 
   refreshList();
 
