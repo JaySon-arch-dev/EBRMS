@@ -126,6 +126,28 @@ function checkPassword(value) {
   return password;
 }
 
+function checkStatus(value) {
+  if (value === undefined || value === null || value === "") return ACTIVE;
+
+  const status = clean(value).toLowerCase();
+  if (status === "active") return ACTIVE;
+  if (status === "inactive") return INACTIVE;
+
+  throw new HttpError(400, "Status must be Active or Inactive.");
+}
+
+// Supabase can refuse a password that breaks the project's password rules.
+// Its message only explains the rule, so it is safe to pass on.
+function passwordError(error, fallback) {
+  const rule =
+    error?.code === "weak_password" ||
+    (error?.status === 422 && /password/i.test(error?.message || ""));
+
+  return rule
+    ? new HttpError(400, `That password was refused: ${error.message}`)
+    : new HttpError(502, fallback);
+}
+
 async function profileRow(userId) {
   const { data, error } = await db()
     .from("users")
@@ -137,6 +159,38 @@ async function profileRow(userId) {
   if (!data) throw new HttpError(404, "That user was not found.");
 
   return data;
+}
+
+// Switches a user between Active and Inactive. The status column is what
+// login.js and authorize.js check; the login account is blocked as well.
+async function applyStatus(row, account, active, caller) {
+  if (!active && String(row.email).toLowerCase() === caller.email) {
+    throw new HttpError(400, "You can't disable your own account.");
+  }
+
+  // Enabling: lift the block first, so nobody is left locked out.
+  if (active && account && BAN_DISABLED_USERS) {
+    const lifted = await db().auth.admin.updateUserById(account.id, {
+      ban_duration: "none"
+    });
+
+    if (lifted.error) throw new HttpError(502, "The account could not be re-enabled.");
+  }
+
+  const saved = await db()
+    .from("users")
+    .update({ status: active ? ACTIVE : INACTIVE })
+    .eq("user_id", row.user_id);
+
+  if (saved.error) throw new HttpError(502, "The account could not be updated.");
+
+  if (!active && account && BAN_DISABLED_USERS) {
+    const blocked = await db().auth.admin.updateUserById(account.id, {
+      ban_duration: BAN_FOR
+    });
+
+    if (blocked.error) console.error("Could not block the login:", blocked.error.message);
+  }
 }
 
 /* ---------- Actions ---------- */
@@ -181,6 +235,7 @@ const actions = {
     const email = checkEmail(input.email);
     const role = checkRole(input.role);
     const password = checkPassword(input.password);
+    const status = checkStatus(input.status);
 
     const taken = await db()
       .from("users")
@@ -199,6 +254,10 @@ const actions = {
     });
 
     if (created.error || !created.data?.user) {
+      if (created.error?.code === "weak_password") {
+        throw passwordError(created.error, "The login account could not be created.");
+      }
+
       const code = created.error?.code || "";
       const exists =
         code === "email_exists" ||
@@ -218,7 +277,7 @@ const actions = {
       full_name: fullName,
       email,
       role,
-      status: ACTIVE
+      status
     });
 
     if (saved.error) {
@@ -229,6 +288,15 @@ const actions = {
       throw new HttpError(502, "The profile could not be saved, so nothing was created.");
     }
 
+    // Created as Inactive: also block the login account.
+    if (status === INACTIVE && BAN_DISABLED_USERS) {
+      const blocked = await db().auth.admin.updateUserById(created.data.user.id, {
+        ban_duration: BAN_FOR
+      });
+
+      if (blocked.error) console.error("Could not block the login:", blocked.error.message);
+    }
+
     return { ok: true };
   },
 
@@ -236,6 +304,7 @@ const actions = {
     const userId = checkUserId(input.user_id);
     const fullName = checkName(input.full_name);
     const role = checkRole(input.role);
+    const status = input.status === undefined ? null : checkStatus(input.status);
 
     const row = await profileRow(userId);
 
@@ -262,6 +331,10 @@ const actions = {
       if (synced.error) console.error("Metadata sync failed:", synced.error.message);
     }
 
+    if (status && (status === ACTIVE) !== (row.status === ACTIVE)) {
+      await applyStatus(row, account, status === ACTIVE, caller);
+    }
+
     return { ok: true };
   },
 
@@ -276,7 +349,7 @@ const actions = {
 
     const result = await db().auth.admin.updateUserById(account.id, { password });
 
-    if (result.error) throw new HttpError(502, "The password could not be changed.");
+    if (result.error) throw passwordError(result.error, "The password could not be changed.");
     return { ok: true };
   },
 
@@ -285,38 +358,9 @@ const actions = {
     const active = input.active === true;
 
     const row = await profileRow(userId);
-
-    if (!active && String(row.email).toLowerCase() === caller.email) {
-      throw new HttpError(400, "You can't disable your own account.");
-    }
-
     const account = BAN_DISABLED_USERS ? await findAuthUser(row.email) : null;
 
-    // Enabling: lift the block first, so nobody is left locked out.
-    if (active && account) {
-      const lifted = await db().auth.admin.updateUserById(account.id, {
-        ban_duration: "none"
-      });
-
-      if (lifted.error) throw new HttpError(502, "The account could not be re-enabled.");
-    }
-
-    // The status column is what login.js and authorize.js check.
-    const saved = await db()
-      .from("users")
-      .update({ status: active ? ACTIVE : INACTIVE })
-      .eq("user_id", userId);
-
-    if (saved.error) throw new HttpError(502, "The account could not be updated.");
-
-    if (!active && account) {
-      const blocked = await db().auth.admin.updateUserById(account.id, {
-        ban_duration: BAN_FOR
-      });
-
-      if (blocked.error) console.error("Could not block the login:", blocked.error.message);
-    }
-
+    await applyStatus(row, account, active, caller);
     return { ok: true };
   }
 };
@@ -359,4 +403,4 @@ export default async function handler(req, res) {
     console.error("admin-users failed:", error);
     return res.status(500).json({ message: "Something went wrong on the server." });
   }
-}
+     } 
