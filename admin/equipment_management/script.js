@@ -1,8 +1,6 @@
-
-
 /* =========================================================
    EBRMS — ADMIN: EQUIPMENT MANAGEMENT
-   File: admin/equipment/script.js
+   File: admin/equipment_management/script.js
 
    Lists all equipment and lets the admin add equipment or edit
    the name, photo, status, condition and quantities.
@@ -100,8 +98,12 @@
     edit.type = "button";
     edit.addEventListener("click", () => openForm(record));
 
+    const remove = el("button", "reject-button", "Delete");
+    remove.type = "button";
+    remove.addEventListener("click", () => askDelete(record));
+
     const actions = el("div", "action-row");
-    actions.append(edit);
+    actions.append(edit, remove);
     copy.append(actions);
 
     row.append(photo, copy);
@@ -409,8 +411,108 @@
     name.focus();
   }
 
+  /* ---------- Delete ---------- */
+
+  function askDelete(record) {
+    const name = record.eq_name || record.eq_id;
+
+    dialog.show({
+      icon: "warning",
+      tone: "is-danger",
+      title: "Delete this equipment?",
+      message: `\u201C${name}\u201D will be removed from the list. This can't be undone.`,
+      actions: [
+        { label: "Cancel", onClick: dialog.close },
+        {
+          label: "Delete",
+          primary: true,
+          danger: true,
+          onClick: () => remove(record, name)
+        }
+      ]
+    });
+  }
+
+  async function remove(record, name) {
+    const { client } = window.EBRMS;
+    dialog.busy(true);
+
+    try {
+      // Items that appear in borrowing records are kept, so the history
+      // of who borrowed what stays complete.
+      const used = await client
+        .from("borrowing_transactions")
+        .select("id")
+        .eq("eq_id", record.eq_id)
+        .limit(1);
+
+      if (used.error) throw used.error;
+
+      if (used.data && used.data.length > 0) {
+        dialog.problem(
+          "Can't delete this item",
+          `\u201C${name}\u201D has borrowing records, so it has to stay. Set its status to Maintenance or Damaged instead.`
+        );
+        return;
+      }
+
+      const result = await client
+        .from("equipment")
+        .delete()
+        .eq("eq_id", record.eq_id)
+        .select("eq_id");
+
+      if (result.error) {
+        const blocked = result.error.code === "23503";
+
+        dialog.problem(
+          blocked ? "Can't delete this item" : "Couldn't delete",
+          blocked
+            ? `\u201C${name}\u201D is still used by other records, so it can't be deleted.`
+            : "We couldn't delete this equipment. Please try again.",
+          result.error.message
+        );
+        return;
+      }
+
+      if (!result.data || result.data.length === 0) {
+        dialog.problem(
+          "Couldn't delete",
+          "Nothing was deleted. Check that admins are allowed to delete equipment.",
+          "No rows were removed."
+        );
+        return;
+      }
+
+      // Tidy up the photo file too (not important if this fails).
+      const photo = record.photo_path;
+
+      if (photo && !/^https:\/\//.test(photo)) {
+        client.storage
+          .from(config.photoBucket)
+          .remove([photo])
+          .catch((error) => console.warn("Photo not removed:", error));
+      }
+
+      dialog.close();
+      window.ADMIN.toast("Equipment deleted");
+      load();
+    } catch (error) {
+      console.error("Delete failed:", error);
+      dialog.problem(
+        "Couldn't delete",
+        "We couldn't delete this equipment. Please try again.",
+        error.message
+      );
+    }
+  }
+
   searchInput.addEventListener("input", applySearch);
   addButton.addEventListener("click", () => openForm(null));
 
-  load();
-})(); 
+  load().catch((error) => {
+    console.error("Loading failed:", error);
+    scroller.removeAttribute("aria-busy");
+    showMessage("Something went wrong while loading.", error.message);
+  });
+})();
