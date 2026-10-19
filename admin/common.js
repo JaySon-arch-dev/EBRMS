@@ -155,7 +155,9 @@
       actions.forEach((action) => {
         const button = el(
           "button",
-          "modal-button" + (action.primary ? " is-primary" : ""),
+          "modal-button" +
+            (action.primary ? " is-primary" : "") +
+            (action.danger ? " is-danger" : ""),
           action.label
         );
         button.type = "button";
