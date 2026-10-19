@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8ff">
+    <meta name="robots" content="noindex">
+
+    <title>User Management | EBRMS Admin</title>
+
+    <link rel="stylesheet" href="/shared-view/style.css">
+    <link rel="stylesheet" href="/admin/style.css">
+    <script>
+        // Setup help: if a script file is missing or crashes, say so on the
+        // page instead of staying on "Loading...".
+        (function () {
+            function say(text) {
+                var box = document.getElementById("itemEmpty");
+                if (box && /Loading/.test(box.textContent)) box.textContent = text;
+            }
+
+            window.addEventListener("error", function (event) {
+                var target = event.target || {};
+                var file = target.src || target.href;
+                say(file
+                    ? "This file didn't load: " + file
+                    : "Script error: " + event.message);
+            }, true);
+
+            window.addEventListener("load", function () {
+                setTimeout(function () {
+                    if (!window.ADMIN) {
+                        say("The admin scripts didn't start. Check that /admin/common.js loads.");
+                    }
+                }, 1500);
+            });
+        })();
+    </script>
+</head>
+<body data-role="Admin" data-page="users" data-home="/admin/">
+
+    <!-- Top bar -->
+    <header class="topbar">
+        <button type="button" class="menu-toggle" id="menuToggle"
+                aria-label="Open menu" aria-controls="menuPanel"
+                aria-expanded="false">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18"
+                      stroke="currentColor" stroke-width="1.9"
+                      stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <a class="brand-logo" href="/admin/" aria-label="EBRMS admin">
+            <span class="brand-logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5"
+                          stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>EBRMS<span class="brand-period">.</span></span>
+        </a>
+
+        <span class="topbar-spacer"></span>
+        <span class="role-badge">Admin</span>
+    </header>
+
+    <div class="menu-scrim" id="menuScrim"></div>
+
+    <div class="layout">
+
+        <!-- Menu box: always visible on desktop, expands on mobile -->
+        <aside class="menu-panel" id="menuPanel" aria-label="Admin menu">
+
+            <div class="menu-head">
+                <button type="button" class="back-button" id="menuBack">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+                <span class="menu-title">NAVIGATION</span>
+            </div>
+
+            <div class="user-chip">
+                <span class="avatar" aria-hidden="true">A</span>
+                <div class="user-chip-copy">
+                    <strong>Admin</strong>
+                    <span>Signed in</span>
+                </div>
+            </div>
+
+            <p class="menu-label">MENU</p>
+
+            <nav class="menu-nav" aria-label="Admin pages">
+                <a class="menu-link" href="/admin/" data-nav="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="8" y="3" width="8" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="m8 14 2.5 2.5L16 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Borrowing Requests
+                </a>
+
+                <a class="menu-link" href="/admin/equipment_management/" data-nav="equipment">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 4v5" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="16" cy="14" r="1.2" fill="currentColor"/></svg>
+                    Equipment Management
+                </a>
+
+                <a class="menu-link" href="/admin/user_management/" data-nav="users">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.2A6.5 6.5 0 0 1 21.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    User Management
+                </a>
+
+                <a class="menu-link" href="/admin/return/" data-nav="returns">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 14 4 9l5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Return Requests
+                </a>
+
+                <a class="menu-link" href="/admin/profile/" data-nav="profile">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="menu-foot">
+                <a class="signout-button" href="/logout/">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round"/>
+                        <path d="M15 8l4 4-4 4M19 12H9"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Sign out
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="page-head">
+                <button type="button" class="back-button" data-back hidden>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 12H5m6-6-6 6 6 6"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+
+                <div>
+                    <h1>User Management</h1>
+                    <p>Add users, change roles and manage access.</p>
+                </div>
+            </div>
+
+
+            <section class="list-panel" aria-label="User management">
+                <div class="panel-toolbar">
+                    <input type="search" class="search-input" id="searchInput"
+                           placeholder="Search users" aria-label="Search users"
+                           autocomplete="off">
+
+                    <select class="search-input role-filter" id="roleFilter"
+                            aria-label="Filter by role">
+                        <option value="">All roles</option>
+                        <option value="student">Students</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="admin">Admins</option>
+                    </select>
+
+                    <button type="button" class="add-button" id="addButton">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor"
+                                  stroke-width="2.2" stroke-linecap="round"/>
+                        </svg>
+                        <span>Add user</span>
+                    </button>
+                </div>
+
+                <div class="list-scroll" tabindex="0" aria-label="Scrollable user list">
+                    <!-- Rows are added by /admin/user_management/script.js. -->
+                    <ul class="item-list" id="itemList"></ul>
+
+                    <p class="list-empty" id="itemEmpty">Loading users&hellip;</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/shared-view/view.js"></script>
+    <script src="/admin/common.js"></script>
+    <script src="/admin/user_management/script.js"></script>
+</body>
+  </html> 
