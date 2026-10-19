@@ -230,6 +230,19 @@
     return select;
   }
 
+  function statusSelect(current) {
+    const select = el("select", "form-control");
+
+    ["Active", "Inactive"].forEach((status) => {
+      const option = el("option", "", status);
+      option.value = status;
+      select.append(option);
+    });
+
+    select.value = String(current || "").toLowerCase() === "inactive" ? "Inactive" : "Active";
+    return select;
+  }
+
   // A readable temporary password, made in the browser.
   function generatePassword() {
     const letters = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -324,6 +337,7 @@
     const email = textInput("", { type: "email", max: 200 });
     email.inputMode = "email";
     const role = roleSelect("Student");
+    const status = statusSelect("Active");
     const password = passwordField(
       "Temporary password",
       "Share it with the user securely. They sign in with their User ID."
@@ -336,6 +350,7 @@
         field("Full name", fullName),
         field("Email", email),
         field("Role", role),
+        field("Account status", status, "An Inactive user can't sign in until you enable them."),
         password.wrapper
       ],
       submitLabel: "Add user",
@@ -356,6 +371,7 @@
           full_name: fullName.value.trim(),
           email: email.value.trim(),
           role: role.value,
+          status: status.value,
           password: password.input.value
         });
         return "User added";
@@ -366,16 +382,24 @@
   /* ---------- Edit a user ---------- */
 
   function openEdit(user) {
+    const isMe = String(user.email || "").toLowerCase() === myEmail;
     const fullName = textInput(user.full_name);
     const role = roleSelect(user.role);
+    const status = statusSelect(user.status);
+    status.disabled = isMe;
 
     openForm({
       title: "Edit user",
       fields: [
         field("User ID", textInput(user.user_id, { readOnly: true })),
-        field("Email", textInput(user.email, { readOnly: true })),
+        field("Email", textInput(user.email, { readOnly: true }), "The email links the login to this profile, so it can't be changed here."),
         field("Full name", fullName),
-        field("Role", role)
+        field("Role", role),
+        field(
+          "Account status",
+          status,
+          isMe ? "You can't disable your own account." : ""
+        )
       ],
       submitLabel: "Save",
       validate: () =>
@@ -384,7 +408,8 @@
         await callApi("update", {
           user_id: user.user_id,
           full_name: fullName.value.trim(),
-          role: role.value
+          role: role.value,
+          ...(isMe ? {} : { status: status.value })
         });
         return "Changes saved";
       }
@@ -465,4 +490,4 @@
     scroller.removeAttribute("aria-busy");
     showMessage("Something went wrong while loading.", error.message);
   });
-})();
+})(); 
