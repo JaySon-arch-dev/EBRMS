@@ -31,7 +31,6 @@ const togglePassword = document.getElementById("togglePassword");
 const loginButton = document.getElementById("loginButton");
 const buttonText = loginButton.querySelector(".button-text");
 const message = document.getElementById("message");
-const pageCurtain = document.getElementById("pageCurtain");
 
 // True once login succeeded and the page is leaving.
 let navigating = false;
@@ -79,30 +78,6 @@ function showMessage(text, type = "error") {
     message.className = `message ${type}`;
 
     if (type !== "success") shakeForm();
-}
-
-// Button turns into a check, then a circle of brand colour opens
-// from it. The dashboard plays the matching "arrive" animation.
-async function playSuccess() {
-    try {
-        sessionStorage.setItem("ebrms:arrive", String(Date.now()));
-    } catch (error) {
-        /* storage unavailable: the dashboard just loads normally */
-    }
-
-    if (prefersReducedMotion()) return;
-
-    loginButton.classList.remove("is-loading");
-    loginButton.classList.add("is-success");
-    setButtonLabel("Welcome");
-
-    const box = loginButton.getBoundingClientRect();
-    pageCurtain.style.setProperty("--cx", `${box.left + box.width / 2}px`);
-    pageCurtain.style.setProperty("--cy", `${box.top + box.height / 2}px`);
-
-    await wait(380);
-    pageCurtain.classList.add("is-open");
-    await wait(640);
 }
 
 function setButtonLabel(text) {
@@ -205,10 +180,8 @@ loginForm.addEventListener("submit", async (event) => {
             return;
         }
 
-        // Play the success animation, then open the dashboard
-        // for the user's role.
+        // Open the dashboard for the user's role.
         navigating = true;
-        await playSuccess();
         window.location.replace(destination);
 
     } catch (error) {
@@ -233,8 +206,7 @@ window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
 
     navigating = false;
-    pageCurtain.classList.remove("is-open");
-    loginButton.classList.remove("is-loading", "is-success");
+    loginButton.classList.remove("is-loading");
     loginButton.disabled = false;
     setButtonLabel("Login");
 });
