@@ -80,6 +80,19 @@ function showMessage(text, type = "error") {
     if (type !== "success") shakeForm();
 }
 
+// Button turns green with a check, then the page fades away.
+async function playSuccess() {
+    if (prefersReducedMotion()) return;
+
+    loginButton.classList.remove("is-loading");
+    loginButton.classList.add("is-success");
+    setButtonLabel("Welcome");
+
+    await wait(650);
+    document.body.classList.add("is-leaving");
+    await wait(380);
+}
+
 function setButtonLabel(text) {
     // Only change the label; keep the arrow icon inside the button intact.
     buttonText.textContent = text;
@@ -182,6 +195,7 @@ loginForm.addEventListener("submit", async (event) => {
 
         // Open the dashboard for the user's role.
         navigating = true;
+        await playSuccess();
         window.location.replace(destination);
 
     } catch (error) {
@@ -206,7 +220,8 @@ window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
 
     navigating = false;
-    loginButton.classList.remove("is-loading");
+    document.body.classList.remove("is-leaving");
+    loginButton.classList.remove("is-loading", "is-success");
     loginButton.disabled = false;
     setButtonLabel("Login");
 });
