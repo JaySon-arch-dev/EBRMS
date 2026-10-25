@@ -31,6 +31,10 @@ const togglePassword = document.getElementById("togglePassword");
 const loginButton = document.getElementById("loginButton");
 const buttonText = loginButton.querySelector(".button-text");
 const message = document.getElementById("message");
+const pageCurtain = document.getElementById("pageCurtain");
+
+// True once login succeeded and the page is leaving.
+let navigating = false;
 
 /* ---------- Icons for the password toggle ---------- */
 
@@ -59,9 +63,46 @@ const eyeIcon = togglePassword.querySelector(".eye-icon");
 
 /* ---------- Helpers ---------- */
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const prefersReducedMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function shakeForm() {
+    loginForm.classList.remove("is-shake");
+    void loginForm.offsetWidth; // restart the animation
+    loginForm.classList.add("is-shake");
+}
+
 function showMessage(text, type = "error") {
     message.textContent = text;
     message.className = `message ${type}`;
+
+    if (type !== "success") shakeForm();
+}
+
+// Button turns into a check, then a circle of brand colour opens
+// from it. The dashboard plays the matching "arrive" animation.
+async function playSuccess() {
+    try {
+        sessionStorage.setItem("ebrms:arrive", String(Date.now()));
+    } catch (error) {
+        /* storage unavailable: the dashboard just loads normally */
+    }
+
+    if (prefersReducedMotion()) return;
+
+    loginButton.classList.remove("is-loading");
+    loginButton.classList.add("is-success");
+    setButtonLabel("Welcome");
+
+    const box = loginButton.getBoundingClientRect();
+    pageCurtain.style.setProperty("--cx", `${box.left + box.width / 2}px`);
+    pageCurtain.style.setProperty("--cy", `${box.top + box.height / 2}px`);
+
+    await wait(380);
+    pageCurtain.classList.add("is-open");
+    await wait(640);
 }
 
 function setButtonLabel(text) {
@@ -107,6 +148,7 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     loginButton.disabled = true;
+    loginButton.classList.add("is-loading");
     setButtonLabel("Checking...");
 
     try {
@@ -163,7 +205,10 @@ loginForm.addEventListener("submit", async (event) => {
             return;
         }
 
-        // Navigate to the dashboard for the user's role.
+        // Play the success animation, then open the dashboard
+        // for the user's role.
+        navigating = true;
+        await playSuccess();
         window.location.replace(destination);
 
     } catch (error) {
@@ -173,7 +218,23 @@ loginForm.addEventListener("submit", async (event) => {
             "Unable to connect to the login service. Please try again."
         );
     } finally {
-        loginButton.disabled = false;
-        setButtonLabel("Login");
+        // After a successful login the page is leaving; keep the
+        // success state instead of flashing back to "Login".
+        if (!navigating) {
+            loginButton.disabled = false;
+            loginButton.classList.remove("is-loading");
+            setButtonLabel("Login");
+        }
     }
+});
+
+// Coming back with the Back button should not show the success state.
+window.addEventListener("pageshow", (event) => {
+    if (!event.persisted) return;
+
+    navigating = false;
+    pageCurtain.classList.remove("is-open");
+    loginButton.classList.remove("is-loading", "is-success");
+    loginButton.disabled = false;
+    setButtonLabel("Login");
 });
