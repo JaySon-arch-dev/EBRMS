@@ -1740,4 +1740,32 @@ a:focus-visible {
         margin-top: 8px;
     }
 
-       } 
+}
+
+
+/* =========================================================
+   24. LOGIN SUCCESS
+   The button turns green with a check and a soft ring, then
+   the page fades up and away before the dashboard opens.
+   ========================================================= */
+
+@keyframes lr-ring {
+    from { box-shadow: 0 0 0 0 rgba(32, 167, 121, 0.45); }
+    to   { box-shadow: 0 0 0 16px rgba(32, 167, 121, 0); }
+}
+
+@keyframes lr-leave {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateY(-10px) scale(0.99); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .login-button.is-success {
+        animation: lr-ring 700ms ease-out;
+    }
+
+    body.is-leaving .login-page {
+        animation: lr-leave 380ms cubic-bezier(0.4, 0, 0.8, 0.4) forwards;
+        pointer-events: none;
+    }
+   }
