@@ -1493,3 +1493,343 @@ a:focus-visible {
         padding-top: 20px;
     }
    }
+
+
+/* =========================================================
+   23. INTERACTIVE REDESIGN
+   - Desktop: the left brand panel and its floating cards are
+     kept exactly as they are. Only the form side gets motion.
+   - Phones (760px and below): splash screen, curved brand
+     header, then the form (same colours as the rest of EBRMS).
+   - Login success: the button turns into a check and a circle
+     of brand colour opens from it before the dashboard loads.
+   ========================================================= */
+
+:root {
+    --lr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+    /* White logo tile with blue lines, for brand-coloured screens */
+    --lr-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 84'%3E%3Crect width='84' height='84' rx='26' fill='white'/%3E%3Cg transform='translate(20 20) scale(1.833)' fill='none' stroke='%234263eb' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='3.5' y='3.5' width='17' height='17' rx='5'/%3E%3Cpath d='M8 8h8M8 12h8M8 16h5'/%3E%3C/g%3E%3C/svg%3E");
+
+    --lr-brand-bg: linear-gradient(160deg, #6a87ff 0%, #4263eb 55%, #3552d4 100%);
+}
+
+@keyframes lr-rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lr-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes lr-pop {
+    0%   { transform: scale(0.3); opacity: 0; }
+    60%  { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes lr-shake {
+    0%, 100% { transform: translateX(0); }
+    18%      { transform: translateX(-8px); }
+    36%      { transform: translateX(7px); }
+    54%      { transform: translateX(-5px); }
+    72%      { transform: translateX(3px); }
+}
+
+@keyframes lr-curtain {
+    from { clip-path: circle(0px at var(--cx, 50%) var(--cy, 50%)); }
+    to   { clip-path: circle(150vmax at var(--cx, 50%) var(--cy, 50%)); }
+}
+
+@keyframes lr-splash-out {
+    0%, 68% {
+        clip-path: ellipse(170% 125% at 50% 0%);
+        visibility: visible;
+    }
+    100% {
+        clip-path: ellipse(170% 0% at 50% 0%);
+        visibility: hidden;
+    }
+}
+
+@keyframes lr-splash-logo {
+    0%   { opacity: 0; transform: translateY(8px) scale(0.7); }
+    40%  { opacity: 1; transform: translateY(0) scale(1.06); }
+    60%  { transform: translateY(0) scale(1); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+/* ---------- Form side: interactions (all screen sizes) ---------- */
+
+.form-group label {
+    transition: color var(--transition-fast);
+}
+
+.form-group:focus-within label {
+    color: var(--brand-primary);
+}
+
+.input-wrapper {
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.input-wrapper:focus-within {
+    transform: translateY(-1px);
+}
+
+.login-button.is-loading:disabled,
+.login-button.is-success:disabled {
+    opacity: 1;
+    cursor: progress;
+}
+
+.button-spinner {
+    display: none;
+
+    position: relative;
+    z-index: 1;
+
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+}
+
+.button-check {
+    display: none;
+
+    position: relative;
+    z-index: 1;
+
+    width: 20px;
+    height: 20px;
+}
+
+.login-button.is-loading .button-arrow,
+.login-button.is-success .button-arrow {
+    display: none;
+}
+
+.login-button.is-loading .button-spinner {
+    display: inline-block;
+
+    animation: lr-spin 700ms linear infinite;
+}
+
+.login-button.is-success {
+    background: linear-gradient(110deg, #2bb98a 0%, #20a779 55%, #198f68 100%);
+    box-shadow: 0 6px 14px rgba(32, 167, 121, 0.28);
+}
+
+.login-button.is-success .button-check {
+    display: block;
+
+    animation: lr-pop 420ms var(--lr-ease) both;
+}
+
+#loginForm.is-shake {
+    animation: lr-shake 420ms ease;
+}
+
+/* The circle of brand colour that opens after a successful login */
+.page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+
+    background:
+        var(--lr-tile) center / 84px 84px no-repeat,
+        var(--lr-brand-bg);
+
+    clip-path: circle(0px at 50% 50%);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.page-curtain.is-open {
+    visibility: visible;
+
+    animation: lr-curtain 640ms cubic-bezier(0.65, 0, 0.25, 1) forwards;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .login-heading,
+    #loginForm .form-group,
+    .login-button,
+    .login-divider,
+    .access-note {
+        animation: lr-rise 560ms var(--lr-ease) backwards;
+        animation-delay: calc(var(--lr-i, 0) * 70ms + 220ms);
+    }
+
+    .login-heading                          { --lr-i: 0; }
+    #loginForm .form-group:nth-of-type(1)   { --lr-i: 1; }
+    #loginForm .form-group:nth-of-type(2)   { --lr-i: 2; }
+    .login-button                           { --lr-i: 3; }
+    .login-divider                          { --lr-i: 4; }
+    .access-note                            { --lr-i: 5; }
+}
+
+
+/* ---------- Phones: splash + curved brand header ---------- */
+
+@media (max-width: 760px) {
+
+    body {
+        background: #ffffff;
+    }
+
+    /* Compact brand-colour header with a curved bottom edge */
+    .brand-panel {
+        padding: 22px 24px 78px;
+
+        border-radius: 0;
+
+        background:
+            radial-gradient(
+                ellipse at 88% 0%,
+                rgba(255, 255, 255, 0.24),
+                transparent 52%
+            ),
+            var(--lr-brand-bg);
+    }
+
+    .brand-panel::before {
+        top: -120px;
+        right: -120px;
+
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .brand-panel::after {
+        top: auto;
+        right: -10%;
+        bottom: -1px;
+        left: -10%;
+
+        width: auto;
+        height: 58px;
+
+        border: 0;
+        border-radius: 62% 38% 0 0 / 100% 100% 0 0;
+
+        background: #ffffff;
+    }
+
+    .brand-logo {
+        color: #ffffff;
+    }
+
+    .brand-logo-mark {
+        color: var(--brand-primary);
+        background: #ffffff;
+        box-shadow: 0 6px 14px rgba(27, 37, 64, 0.18);
+    }
+
+    .brand-period {
+        color: #cfdaff;
+    }
+
+    .brand-status {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.16);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .brand-content {
+        padding-top: 24px;
+    }
+
+    .eyebrow {
+        display: none;
+    }
+
+    .brand-content h1 {
+        color: #ffffff;
+        font-size: clamp(28px, 8vw, 36px);
+        letter-spacing: -1.3px;
+    }
+
+    .brand-content h1 span {
+        color: #dbe4ff;
+    }
+
+    .form-top,
+    .login-symbol {
+        display: none;
+    }
+
+    .form-panel {
+        padding-top: 4px;
+    }
+
+    .login-container {
+        padding-top: 6px;
+    }
+
+    .login-heading h2 {
+        font-size: 30px;
+        letter-spacing: -1px;
+    }
+
+    .login-heading p {
+        margin-top: 8px;
+    }
+
+    /* Splash: brand screen, then a curved wipe up to the page */
+    .page-curtain {
+        background:
+            var(--lr-tile) center / 84px 84px no-repeat,
+            var(--lr-brand-bg);
+    }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+
+    body::before {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+
+        background:
+            var(--lr-tile) center 42% / 84px 84px no-repeat,
+            var(--lr-brand-bg);
+
+        pointer-events: none;
+
+        animation: lr-splash-out 1.35s ease forwards;
+
+        content: "";
+    }
+
+    body::after {
+        position: fixed;
+        top: calc(42% + 62px);
+        right: 0;
+        left: 0;
+        z-index: 201;
+
+        color: #ffffff;
+
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.9px;
+        text-align: center;
+
+        pointer-events: none;
+
+        animation:
+            lr-splash-logo 0.7s var(--lr-ease) both,
+            lr-splash-out 1.35s ease forwards;
+
+        content: "EBRMS.";
+    }
+   }
