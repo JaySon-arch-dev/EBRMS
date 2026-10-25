@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f5f8ff">
+    <meta name="theme-color" content="#4263eb" media="(max-width: 760px)">
     <meta name="description" content="EBRMS — Equipment Borrowing and Returning Management System.">
 
     <title>Login | EBRMS</title>
@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="/login/style.css">
 </head>
 <body>
+    <!-- Opens from the Login button after a successful login -->
+    <div class="page-curtain" id="pageCurtain" aria-hidden="true"></div>
+
     <main class="login-page">
 
         <!-- Branding panel -->
@@ -289,6 +292,18 @@
                                   stroke-linecap="round"
                                   stroke-linejoin="round"/>
                         </svg>
+
+                        <span class="button-spinner" aria-hidden="true"></span>
+
+                        <svg class="button-check"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             aria-hidden="true">
+                            <path d="m5 12.5 4.5 4.5L19 7"
+                                  stroke="currentColor" stroke-width="2.2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                        </svg>
                     </button>
                 </form>
 
@@ -318,4 +333,4 @@
     <!-- Existing authentication logic -->
     <script src="/login/script.js"></script>
 </body>
-    </html>
+                                </html>
