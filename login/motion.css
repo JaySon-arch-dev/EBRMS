@@ -1,0 +1,82 @@
+/* =========================================================
+   EBRMS LOGIN — MOTION
+   File: login/motion.css
+   Load AFTER /login/style.css.
+
+   - Phones (760px and below): a short logo splash on open
+   - All sizes: the page fades up and away when login succeeds
+   The login layout itself is not changed.
+   ========================================================= */
+
+@keyframes lm-splash-out {
+    0%, 72% { opacity: 1; visibility: visible; }
+    100%    { opacity: 0; visibility: hidden; }
+}
+
+@keyframes lm-splash-logo {
+    0%   { opacity: 0; transform: translateY(6px) scale(0.7); }
+    35%  { opacity: 1; transform: translateY(0) scale(1.06); }
+    55%  { transform: translateY(0) scale(1); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes lm-exit {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateY(-12px) scale(0.985); }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+
+    /* Backdrop + logo tile */
+    body::before {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+
+        background:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 84'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236280ff'/%3E%3Cstop offset='1' stop-color='%233d5be0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='84' height='84' rx='26' fill='url(%23g)'/%3E%3Cg transform='translate(20 20) scale(1.833)' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round'%3E%3Crect x='3.5' y='3.5' width='17' height='17' rx='5'/%3E%3Cpath d='M8 8h8M8 12h8M8 16h5'/%3E%3C/g%3E%3C/svg%3E")
+                center 42% / 84px 84px no-repeat,
+            radial-gradient(
+                ellipse at 8% 0%,
+                rgba(178, 199, 255, 0.5),
+                transparent 45%
+            ),
+            var(--page-bg, #f5f8ff);
+
+        pointer-events: none;
+
+        animation: lm-splash-out 1.3s ease forwards;
+
+        content: "";
+    }
+
+    /* Wordmark under the tile */
+    body::after {
+        position: fixed;
+        top: calc(42% + 62px);
+        right: 0;
+        left: 0;
+        z-index: 201;
+
+        color: var(--text-primary, #1b2540);
+
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.9px;
+        text-align: center;
+
+        pointer-events: none;
+
+        animation:
+            lm-splash-logo 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+            lm-splash-out 1.3s ease forwards;
+
+        content: "EBRMS.";
+    }
+}
+
+/* Login succeeded: fade the page away before the dashboard opens */
+body.lm-leaving .login-page {
+    animation: lm-exit 360ms cubic-bezier(0.5, 0, 0.8, 0.4) forwards;
+    pointer-events: none;
+                                          } 
