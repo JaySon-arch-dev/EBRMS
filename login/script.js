@@ -1,3 +1,8 @@
+/* =========================================================
+   SAVE AS: /login/script.js
+   Replaces the existing /login/script.js in your project.
+   ========================================================= */
+
 const SUPABASE_URL =
     "https://lrlzlzfulcajbuqeufym.supabase.co";
 
@@ -98,6 +103,63 @@ function setButtonLabel(text) {
     buttonText.textContent = text;
 }
 
+/* =========================================================
+   SESSION HANDLER (added): messages and auto-redirect
+   ========================================================= */
+
+const REASONS = {
+    idle: "You were signed out because of inactivity.",
+    expired: "Your session has expired. Please log in again.",
+    signedout: "You have been signed out.",
+    denied: "Your account no longer has access. Please contact the administrator.",
+    error: "We could not verify your session. Please log in again."
+};
+
+// Shows why the user landed here (set by /shared-view/session.js).
+function showReasonFromUrl() {
+    const reason = new URLSearchParams(window.location.search).get("reason");
+
+    if (!reason) return false;
+
+    if (REASONS[reason]) {
+        message.textContent = REASONS[reason];
+        message.className =
+            `message ${reason === "signedout" ? "success" : "warning"}`;
+    }
+
+    // Keep the address bar clean.
+    window.history.replaceState(null, "", window.location.pathname);
+    return true;
+}
+
+// Already signed in? Skip the form and open the dashboard.
+async function redirectIfSignedIn() {
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+        const token = data && data.session && data.session.access_token;
+
+        if (!token) return;
+
+        const response = await fetch("/api/auth-check", {
+            headers: { Authorization: `Bearer ${token}` },
+            cache: "no-store"
+        });
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+        const destination = roleRoutes[result.user && result.user.role];
+
+        if (destination) window.location.replace(destination);
+    } catch (error) {
+        /* stay on the login page */
+    }
+}
+
+if (!showReasonFromUrl()) redirectIfSignedIn();
+
+/* ===== END SESSION HANDLER ===== */
+
 /* ---------- Password visibility ---------- */
 
 togglePassword.addEventListener("click", () => {
@@ -194,6 +256,14 @@ loginForm.addEventListener("submit", async (event) => {
         }
 
         // Open the dashboard for the user's role.
+        /* ===== SESSION HANDLER (added): start the inactivity clock ===== */
+        try {
+            localStorage.setItem("ebrms:last-activity", String(Date.now()));
+            localStorage.removeItem("ebrms:logout");
+        } catch (error) {
+            /* storage unavailable */
+        }
+
         navigating = true;
         await playSuccess();
         window.location.replace(destination);
