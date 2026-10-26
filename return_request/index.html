@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- =========================================================
+     SAVE AS: /return_request/index.html
+     Replaces the existing /return_request/index.html in your project.
+     ========================================================= -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +13,12 @@
     <title>My Return Request | EBRMS</title>
 
     <link rel="stylesheet" href="/shared-view/style.css">
+    <!-- ===== SESSION HANDLER (added): hide the page until the session is verified ===== -->
+    <style>body { visibility: hidden; }</style>
+    <!-- ===== END SESSION HANDLER ===== -->
 </head>
-<body data-page="returns">
+<!-- SESSION HANDLER (added): data-require-session="false" on the body tag below -->
+<body data-require-session="false" data-page="returns">
 
     <!-- Top bar -->
     <header class="topbar">
@@ -198,7 +206,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- ===== SESSION HANDLER (added): must load before view.js ===== -->
+    <script src="/shared-view/session.js"></script>
+    <!-- ===== END SESSION HANDLER ===== -->
+
     <script src="/shared-view/view.js"></script>
     <script src="/return_request/script.js"></script>
 </body>
-                      </html>
+                            </html>
