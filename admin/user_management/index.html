@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- =========================================================
+     SAVE AS: /admin/user_management/index.html
+     Replaces the existing /admin/user_management/index.html in your project.
+     ========================================================= -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,8 +40,12 @@
             });
         })();
     </script>
+    <!-- ===== SESSION HANDLER (added): hide the page until the session is verified ===== -->
+    <style>body { visibility: hidden; }</style>
+    <!-- ===== END SESSION HANDLER ===== -->
 </head>
-<body data-role="Admin" data-page="users" data-home="/admin/">
+<!-- SESSION HANDLER (added): data-require-session="false" on the body tag below -->
+<body data-require-session="false" data-role="Admin" data-page="users" data-home="/admin/">
 
     <!-- Top bar -->
     <header class="topbar">
@@ -196,8 +204,13 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- ===== SESSION HANDLER (added): must load before view.js ===== -->
+    <script src="/shared-view/session.js"></script>
+    <!-- ===== END SESSION HANDLER ===== -->
+
     <script src="/shared-view/view.js"></script>
     <script src="/admin/common.js"></script>
     <script src="/admin/user_management/script.js"></script>
 </body>
-  </html> 
+                    </html>
