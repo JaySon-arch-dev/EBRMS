@@ -361,6 +361,21 @@
             CONFIG.recheckMinutes * 60 * 1000);
     }
 
+    /* ---------- Notification bell ---------- */
+    // Loads /shared-view/notifications.js on every protected page, so the
+    // bell appears even on pages that don't have its <script> tag.
+
+    function loadBell() {
+        if (
+            window.__ebrmsBell ||
+            document.querySelector('script[src*="notifications.js"]')
+        ) return;
+
+        const script = document.createElement("script");
+        script.src = "/shared-view/notifications.js";
+        document.body.appendChild(script);
+    }
+
     /* ---------- Start ---------- */
 
     async function init() {
@@ -378,6 +393,7 @@
             touch(true);
             document.body.style.visibility = "visible";
             listen();
+            loadBell();
 
         } catch (error) {
             console.error("Session check failed:", error);
