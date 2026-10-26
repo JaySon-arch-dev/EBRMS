@@ -44,7 +44,7 @@
 
     // Optional: read now, before view.js fills in a label on shared pages.
     const expectedRole = document.body.dataset.role || "";
-    const idleMs = CONFIG.idleMinutes * 60 * 1000;
+    const idleMs = CONFIG.idleSeconds * 15 * 1000;
     const warnMs = CONFIG.warnSeconds * 1000;
 
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
