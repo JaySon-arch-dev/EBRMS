@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- =========================================================
+     SAVE AS: /student/index.html
+     Replaces the existing /student/index.html in your project.
+     ========================================================= -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +13,12 @@
     <title>Menu | EBRMS</title>
 
     <link rel="stylesheet" href="/shared-view/style.css">
+    <!-- ===== SESSION HANDLER (added): hide the page until the session is verified ===== -->
+    <style>body { visibility: hidden; }</style>
+    <!-- ===== END SESSION HANDLER ===== -->
 </head>
-<body data-role="Student" data-page="dashboard" data-home="/student/">
+<!-- SESSION HANDLER (added): data-require-session="false" on the body tag below -->
+<body data-require-session="false" data-role="Student" data-page="dashboard" data-home="/student/">
 
     <!-- Top bar -->
     <header class="topbar">
@@ -213,8 +221,13 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- ===== SESSION HANDLER (added): must load before view.js ===== -->
+    <script src="/shared-view/session.js"></script>
+    <!-- ===== END SESSION HANDLER ===== -->
+
     <script src="/shared-view/view.js"></script>
     <script src="/shared-view/equipment.js"></script>
     <script src="/shared-view/borrow.js"></script>
 </body>
-                            </html>
+                        </html>
