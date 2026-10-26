@@ -1,3 +1,8 @@
+/* =========================================================
+   SAVE AS: /logout/script.js
+   Replaces the existing /logout/script.js in your project.
+   ========================================================= */
+
 const SUPABASE_URL =
   "https://lrlzlzfulcajbuqeufym.supabase.co";
 
@@ -47,6 +52,18 @@ async function signOutUser() {
   );
 
   try {
+    /* ===== SESSION HANDLER (added): tell the other open tabs ===== */
+    try {
+      localStorage.setItem(
+        "ebrms:logout",
+        JSON.stringify({ t: Date.now(), reason: "signedout" })
+      );
+      localStorage.removeItem("ebrms:last-activity");
+    } catch (storageError) {
+      /* storage unavailable */
+    }
+    /* ===== END SESSION HANDLER ===== */
+
     const { error } = await supabaseClient.auth.signOut();
 
     if (error) {
@@ -61,7 +78,7 @@ async function signOutUser() {
 
     // Replace this page so the Back button doesn't return
     // to the logout screen as an active dashboard.
-    window.location.replace("/login/");
+    window.location.replace("/login/?reason=signedout");
   } catch (error) {
     console.error("Sign-out failed:", error);
 
