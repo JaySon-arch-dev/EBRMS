@@ -24,6 +24,10 @@
 (() => {
     "use strict";
 
+    // Safe to load twice (by a page tag and by session.js).
+    if (window.__ebrmsBell) return;
+    window.__ebrmsBell = true;
+
     /* ---------- Settings ---------- */
 
     const CONFIG = {
