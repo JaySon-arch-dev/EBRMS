@@ -322,6 +322,7 @@
     let isOpen = false;
     let highlight = new Set(); // ids shown as "new" while the panel is open
     let busy = false;
+    let loadFailed = false; // shows a friendly message instead of hiding the bell
 
     function buildItem(row) {
         const look = WATCH[statusKey(row)];
@@ -386,7 +387,14 @@
                   list.append(...items.map(buildItem));
                   return list;
               })()
-            : el("p", "nt-empty", mode.empty);
+            : el(
+                  "p",
+                  "nt-empty",
+                  loadFailed
+                      ? "We couldn't load your notifications right now. " +
+                        "Please refresh the page or try again later."
+                      : mode.empty
+              );
 
         const foot = el("a", "nt-foot", mode.footer.label);
         foot.href = mode.footer.href;
@@ -516,9 +524,12 @@
 
             if (error) {
                 console.error("Notifications: could not load:", error.message);
+                loadFailed = true;
+                if (isOpen) renderPanel();
                 return;
             }
 
+            loadFailed = false;
             rows = data || [];
 
             // First time in this browser: everything that exists is "seen",
@@ -558,9 +569,19 @@
 
         if (!(await user)) return;
 
+        // The bell shows as soon as someone is signed in, so it never
+        // silently disappears if the profile lookup fails.
+        wrap.hidden = false;
+
         const profile = await getProfile();
 
-        if (!profile || !profile.user_id) return;
+        if (!profile || !profile.user_id) {
+            console.error(
+                "Notifications: no row for this account in the users table."
+            );
+            loadFailed = true;
+            return;
+        }
 
         // Admins see requests to act on; everyone else sees their own.
         const role = String(
@@ -572,7 +593,6 @@
 
         userId = profile.user_id;
         storeKey = `ebrms:notif:${userId}`;
-        wrap.hidden = false;
 
         await refresh();
 
