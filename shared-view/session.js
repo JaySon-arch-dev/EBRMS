@@ -1,6 +1,8 @@
 /* =========================================================
    EBRMS SESSION HANDLER
    SAVE AS: /shared-view/session.js
+   Test: set idleSeconds to 20, or open any page with ?sessiondebug
+   at the end of the address to see a small countdown badge.
    New file: add it to your project (nothing to replace).
 
    Load on every Student, Faculty and Admin page, right after
@@ -23,13 +25,15 @@
     /* ---------- Settings ---------- */
 
     const CONFIG = {
-        idleSeconds: 15,       // sign out after this much inactivity
-        warnSeconds: 10,       // show the prompt this long before that
-        recheckSeconds: 5,     // re-verify the account in the background
+        // ===== TEST VALUES: change these back before going live =====
+        idleSeconds: 15,       // LIVE VALUE: 30 * 60
+        warnSeconds: 8,        // LIVE VALUE: 60
+        debug: true,           // LIVE VALUE: false
+        // ============================================================
+        recheckMinutes: 5,     // re-verify the account in the background
         loginPath: "/login/",
         checkPath: "/api/auth-check"
     };
-
     const SUPABASE_URL = "https://lrlzlzfulcajbuqeufym.supabase.co";
     const SUPABASE_KEY = "sb_publishable_zVdMyZmwz8NnOo4YHqY9pg_JSoMivtn";
 
@@ -44,8 +48,18 @@
 
     // Optional: read now, before view.js fills in a label on shared pages.
     const expectedRole = document.body.dataset.role || "";
-    const idleMs = CONFIG.idleSeconds * 15 * 1000;
-    const warnMs = CONFIG.warnSeconds * 1000;
+    const idleMs = CONFIG.idleSeconds * 1000;
+
+    // The prompt can never be longer than half of the idle time.
+    const warnSeconds = Math.max(
+        1,
+        Math.min(CONFIG.warnSeconds, Math.floor(CONFIG.idleSeconds / 2))
+    );
+    const warnMs = warnSeconds * 1000;
+
+    const debugOn =
+        CONFIG.debug ||
+        /[?&]sessiondebug\b/.test(window.location.search);
 
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: {
@@ -265,7 +279,7 @@
 
         countEl.textContent = String(secondsLeft);
         barEl.style.strokeDashoffset =
-            String(CIRC * (1 - secondsLeft / CONFIG.warnSeconds));
+            String(CIRC * (1 - secondsLeft / warnSeconds));
     }
 
     function hideWarning() {
@@ -289,12 +303,35 @@
         hideWarning();
     }
 
+    /* ---------- Debug badge (CONFIG.debug or ?sessiondebug) ---------- */
+
+    let badge = null;
+
+    function updateBadge(left) {
+        if (!debugOn) return;
+
+        if (!badge) {
+            badge = document.createElement("div");
+            badge.style.cssText =
+                "position:fixed;left:10px;bottom:10px;z-index:99999;" +
+                "padding:6px 10px;border-radius:8px;background:#1b2540;" +
+                "color:#fff;font:12px/1.3 monospace;opacity:.9;" +
+                "pointer-events:none";
+            document.body.appendChild(badge);
+        }
+
+        badge.textContent =
+            `session ok · ${expectedRole || "any role"} · ` +
+            `signs out in ${Math.max(0, Math.ceil(left / 1000))}s`;
+    }
+
     /* ---------- Timers and listeners ---------- */
 
     function tick() {
         if (leaving) return;
 
         const left = idleMs - (Date.now() - readActivity());
+        updateBadge(left);
 
         if (left <= 0) {
             signOut("idle");
@@ -373,6 +410,11 @@
             touch(true);
             document.body.style.visibility = "visible";
             listen();
+
+            console.info(
+                `[EBRMS session] running (${expectedRole || "any role"}): ` +
+                `signs out after ${CONFIG.idleSeconds}s of inactivity`
+            );
         } catch (error) {
             console.error("Session check failed:", error);
             signOut("error");
