@@ -14,7 +14,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { authorize } from "../lib/authorize.js";
 
-const ROLES = ["Student", "Faculty", "Admin"];
+// Student is out of scope for this system demo: the Admin can neither see,
+// create nor change Student accounts (the database hides them as well).
+const ROLES = ["Faculty", "Admin"];
+const HIDDEN_ROLE = "student";
+const isHidden = (role) => String(role || "").trim().toLowerCase() === HIDDEN_ROLE;
 const ACTIVE = "Active";
 const INACTIVE = "Inactive";
 const BAN_FOR = "876000h"; // about 100 years = blocked
@@ -112,7 +116,7 @@ function checkEmail(value) {
 function checkRole(value) {
   const role = ROLES.find((item) => item.toLowerCase() === clean(value).toLowerCase());
 
-  if (!role) throw new HttpError(400, "Role must be Student, Faculty or Admin.");
+  if (!role) throw new HttpError(400, "Role must be Faculty or Admin.");
   return role;
 }
 
@@ -156,7 +160,7 @@ async function profileRow(userId) {
     .maybeSingle();
 
   if (error) throw new HttpError(502, "Could not read the users table.");
-  if (!data) throw new HttpError(404, "That user was not found.");
+  if (!data || isHidden(data.role)) throw new HttpError(404, "That user was not found.");
 
   return data;
 }
@@ -200,6 +204,7 @@ const actions = {
     const { data, error } = await db()
       .from("users")
       .select("user_id, full_name, email, role, status")
+      .not("role", "ilike", HIDDEN_ROLE)
       .order("full_name", { ascending: true })
       .limit(2000);
 
@@ -403,4 +408,4 @@ export default async function handler(req, res) {
     console.error("admin-users failed:", error);
     return res.status(500).json({ message: "Something went wrong on the server." });
   }
-     } 
+         } 
