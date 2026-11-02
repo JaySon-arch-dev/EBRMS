@@ -13,7 +13,7 @@
 (() => {
   const { config, el, formatDate, dialog } = window.ADMIN;
 
-  const ROLES = ["Student", "Faculty", "Admin"];
+  const ROLES = ["Faculty", "Admin"];
   const API = "/api/admin-users";
 
   const list = document.getElementById("itemList");
@@ -181,7 +181,8 @@
 
     try {
       const result = await callApi("list");
-      users = result.users;
+      // Students are out of scope here, so they are never shown.
+      users = result.users.filter((u) => String(u.role || "").toLowerCase() !== "student");
     } catch (error) {
       scroller.removeAttribute("aria-busy");
       console.error("Could not load users:", error.message);
@@ -226,7 +227,7 @@
     });
 
     const match = ROLES.find((r) => r.toLowerCase() === String(current || "").toLowerCase());
-    select.value = match || "Student";
+    select.value = match || "Faculty";
     return select;
   }
 
@@ -336,7 +337,7 @@
     const fullName = textInput("");
     const email = textInput("", { type: "email", max: 200 });
     email.inputMode = "email";
-    const role = roleSelect("Student");
+    const role = roleSelect("Faculty");
     const status = statusSelect("Active");
     const password = passwordField(
       "Temporary password",
